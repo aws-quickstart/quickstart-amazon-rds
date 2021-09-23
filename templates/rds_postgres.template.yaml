@@ -393,6 +393,18 @@ Resources:
     Condition: UseDatabaseEncryption
     DeletionPolicy: Retain
     Type: AWS::KMS::Key
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - EKMSKeyEnableKeyRotation #Key rotation would cause the database to become inaccessible
+            - W3011 # Quick Starts need to be able to delete all assets upon stack deletion
+      cfn_nag:
+        rules_to_suppress:
+          - id: F19
+            reason: "Key rotation would cause the database to become inaccessible"
+          - id: F76
+            reason: "Conditions are included in the policy to limit its scope"
     Properties:
       KeyPolicy:
         Version: 2012-10-17
@@ -423,6 +435,11 @@ Resources:
         log_rotation_size: '102400'
   RDSDBInstance:
     Type: "AWS::RDS::DBInstance"
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - W3011 # Quick Starts need to be able to delete all assets upon stack deletion
     Properties:
       AllocatedStorage: !Ref DBAllocatedStorage
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
