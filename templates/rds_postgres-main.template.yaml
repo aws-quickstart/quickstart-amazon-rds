@@ -1,6 +1,10 @@
 Description: "AWS VPC + Amazon Relational Database Service (RDS) for PostgreSQL (qs-1saaatk1o)"
 Metadata:
   LICENSE: Apache License Version 2.0
+  cfn-lint:
+    config:
+      ignore_checks:
+        - E9101 # As AWS::RDS::DBInstance has properties called “MasterUsername” : String and “MasterUserPassword” : String
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
