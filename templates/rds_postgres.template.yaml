@@ -397,6 +397,8 @@ Resources:
       cfn-lint:
         config:
           ignore_checks:
+            - EIAMPolicyWildcardResource
+            - EIAMPolicyActionWildcard
             - EKMSKeyEnableKeyRotation #Key rotation would cause the database to become inaccessible
             - W3011 # Quick Starts need to be able to delete all assets upon stack deletion
       cfn_nag:
@@ -459,6 +461,7 @@ Resources:
       MonitoringInterval: !Ref DBMonitoringInterval
       MonitoringRoleArn: !If [UseEnhancedMonitoring, !GetAtt MonitoringIAMRole.Arn, !Ref 'AWS::NoValue']
       Port: !Ref DBPort
+      PubliclyAccessible: false
       StorageType: !Ref DBStorageType
       Iops: !If [DBProvisionedIops, !Ref DBIops, !Ref 'AWS::NoValue']
       StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref 'AWS::NoValue']
