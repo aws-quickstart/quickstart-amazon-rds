@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: "Amazon Relational Database Service (RDS) for PostgreSQL; Do Not Remove Apache License Version 2.0 (QS:TBD) – September,13,2021"
+Description: "Amazon Relational Database Service (RDS) for PostgreSQL; Apache License Version 2.0; September,13,2021 (qs-1saaatk22)"
 Metadata:
   LICENSE: Apache License Version 2.0
   AWS::CloudFormation::Interface:
@@ -38,7 +38,7 @@ Metadata:
       - Confidentiality
       - Compliance
     ParameterLabels:
-      AllocatedStorage:
+      DBAllocatedStorage:
         default: Amount of storage (in gigabytes)
       DBName:
         default: Database name
@@ -121,10 +121,6 @@ Mappings:
     "13.3":
       "family": "postgres13"
 Conditions:
-  IsDBMultiAZ:
-    !Equals
-    - !Ref DBMultiAZ
-    - 'true'
   EventSubscription:
     !Equals
     - !Ref EnableEventSubscription
@@ -136,6 +132,9 @@ Conditions:
         - ''
   DBProvisionedIops:
     !Equals [ !Ref DBStorageType, io1 ]
+  UseEnhancedMonitoring:
+    !Not
+      - !Equals [ !Ref DBMonitoringInterval, 0 ]
   UseDatabaseEncryption:
     !Equals
     - !Ref DBAllocatedStorageEncrypted
@@ -259,6 +258,17 @@ Parameters:
     MaxLength: "16"
     MinLength: "1"
     Type: String
+  DBMonitoringInterval:
+    AllowedValues:
+      - 0
+      - 1
+      - 5
+      - 15
+      - 30
+      - 60
+    Default: 60
+    Description: "Enhanced Monitoring metrics interval in seconds. To disable Enhanced Monitoring metrics, specify 0"
+    Type: Number
   DBPort:
     Default: 5432
     Description: "The port the instance will listen for connections on."
@@ -357,6 +367,22 @@ Parameters:
       - ''
 
 Resources:
+  MonitoringIAMRole:
+    Condition: UseEnhancedMonitoring
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "monitoring.rds.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole
   DBSNSTopic:
     Type: AWS::SNS::Topic
     Properties:
@@ -399,6 +425,7 @@ Resources:
     Type: "AWS::RDS::DBInstance"
     Properties:
       AllocatedStorage: !Ref DBAllocatedStorage
+      AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
       DBParameterGroupName: !Ref DBParamGroup
       DBInstanceClass: !Ref DBInstanceClass
@@ -412,6 +439,8 @@ Resources:
       MasterUserPassword: !Ref DBMasterUserPassword
       MasterUsername: !Ref DBMasterUsername
       MaxAllocatedStorage: !Ref DBMaxAllocatedStorage
+      MonitoringInterval: !Ref DBMonitoringInterval
+      MonitoringRoleArn: !If [UseEnhancedMonitoring, !GetAtt MonitoringIAMRole.Arn, !Ref 'AWS::NoValue']
       Port: !Ref DBPort
       StorageType: !Ref DBStorageType
       Iops: !If [DBProvisionedIops, !Ref DBIops, !Ref 'AWS::NoValue']

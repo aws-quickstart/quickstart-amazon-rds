@@ -1,4 +1,4 @@
-Description: "AWS VPC + Amazon Relational Database Service (RDS) for PostgreSQL QS(ID)"
+Description: "AWS VPC + Amazon Relational Database Service (RDS) for PostgreSQL (qs-1saaatk1o)"
 Metadata:
   LICENSE: Apache License Version 2.0
   AWS::CloudFormation::Interface:
@@ -13,7 +13,6 @@ Metadata:
       - PrivateSubnet2CIDR
       - PublicSubnet1CIDR
       - PublicSubnet2CIDR
-      - AccessCIDR
     - Label:
         default: Linux bastion configuration
       Parameters:
@@ -268,6 +267,17 @@ Parameters:
     MaxLength: "16"
     MinLength: "1"
     Type: String
+  DBMonitoringInterval:
+    AllowedValues:
+      - 0
+      - 1
+      - 5
+      - 15
+      - 30
+      - 60
+    Default: 60
+    Description: "Enhanced Monitoring metrics interval in seconds. To disable Enhanced Monitoring metrics, specify 0."
+    Type: Number
   DBPort:
     Default: 5432
     Description: "The port the instance will listen for connections on."
@@ -358,8 +368,8 @@ Resources:
       TemplateURL:
         Fn::Sub:
           - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
-          - S3Region: !If [UsingDefaultBucket, !Ref AWS::Region, !Ref QSS3BucketRegion]
-            S3Bucket: !If [!Ref QSS3BucketRegion, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         AvailabilityZones: !Join 
           - ','
@@ -402,6 +412,7 @@ Resources:
         DBInstanceClass: !Ref DBInstanceClass
         DBMasterUsername: !Ref DBMasterUsername
         DBMasterUserPassword: !Ref DBMasterUserPassword
+        DBMonitoringInterval: !Ref DBMonitoringInterval
         DBPort: !Ref DBPort
         DBMultiAZ: !Ref DBMultiAZ
         DBAccessCIDR: !Ref VPCCIDR
