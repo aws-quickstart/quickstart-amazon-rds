@@ -1,0 +1,22 @@
+project:
+  name: quickstart-amazon-rds-postgres
+  owner: quickstart-eng@amazon.com
+  package_lambda: false
+  regions:
+    - us-west-2
+tests:
+  rds-postgresql:
+    parameters:
+      AccessCIDR: --overrides--
+      AvailabilityZones: $[taskcat_genaz_2]
+      DBMasterUserPassword: --overrides--
+      EnableEventSubscription: "false"
+      EnableBastion: "false"
+      KeyPairName: --overrides--
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      QSS3KeyPrefix: quickstart-amazon-rds-postgres/
+      RemoteAccessCIDR: 10.0.0.0/16
+    regions:
+      - us-west-2
+    template: templates/rds_postgres-main.template.yaml
