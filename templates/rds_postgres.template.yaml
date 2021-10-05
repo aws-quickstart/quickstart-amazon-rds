@@ -2,10 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: "Amazon Relational Database Service (RDS) for PostgreSQL; Apache License Version 2.0; September,13,2021 (qs-1saaatk22)"
 Metadata:
   LICENSE: Apache License Version 2.0
-  cfn-lint:
-    config:
-      ignore_checks:
-        - E9101 # As AWS::RDS::DBInstance has properties called “MasterUsername” : String and “MasterUserPassword” : String
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -20,6 +16,7 @@ Metadata:
       Parameters:
       - DBName
       - DBAutoMinorVersionUpgrade
+      - DBAllowMajorVersionUpgrade
       - DBBackupRetentionPeriod
       - DBEngineVersion
       - DBInstanceClass
@@ -92,6 +89,12 @@ Metadata:
        default: Confidentiality classifier
       ProjectCostCenter:
        default: Project cost center
+  cfn-lint:
+    config:
+      ignore_checks:
+        - E9101
+      ignore_reasons:
+        - E9101: Not applicable as AWS::RDS::DBInstance has properties called “MasterUsername” and “MasterUserPassword
 Mappings:
   DBFamilyMap:
     "9.6.20":
@@ -207,6 +210,13 @@ Parameters:
       - "false"
     Default: "false"
     Description: "Select true to set up auto minor version upgrade."
+    Type: String
+  DBAllowMajorVersionUpgrade:
+    AllowedValues:
+      - "true"
+      - "false"
+    Default: "false"
+    Description: "Select true to set up major version upgrade."
     Type: String
   DBBackupRetentionPeriod:
     Default: "35"
@@ -369,7 +379,6 @@ Parameters:
       - fips
       - other
       - ''
-
 Resources:
   MonitoringIAMRole:
     Condition: UseEnhancedMonitoring
@@ -449,6 +458,7 @@ Resources:
     Properties:
       AllocatedStorage: !Ref DBAllocatedStorage
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
+      AllowMajorVersionUpgrade: !Ref DBAllowMajorVersionUpgrade
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
       DBParameterGroupName: !Ref DBParamGroup
       DBInstanceClass: !Ref DBInstanceClass

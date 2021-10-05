@@ -1,10 +1,6 @@
 Description: "AWS VPC + Amazon Relational Database Service (RDS) for PostgreSQL (qs-1saaatk1o)"
 Metadata:
   LICENSE: Apache License Version 2.0
-  cfn-lint:
-    config:
-      ignore_checks:
-        - E9101 # As AWS::RDS::DBInstance has properties called “MasterUsername” : String and “MasterUserPassword” : String
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -119,6 +115,12 @@ Metadata:
         default: Key Name
       RemoteAccessCIDR:
         default: Permitted IP range
+  cfn-lint:
+    config:
+      ignore_checks:
+        - E9101
+      ignore_reasons:
+        - E9101: Not applicable as AWS::RDS::DBInstance has properties called “MasterUsername” and “MasterUserPassword
 Parameters:
   AvailabilityZones:
    Description: >-
@@ -224,6 +226,13 @@ Parameters:
       - "false"
     Default: "false"
     Description: "Select true to set up auto minor version upgrade."
+    Type: String
+  DBAllowMajorVersionUpgrade:
+    AllowedValues:
+      - "true"
+      - "false"
+    Default: "false"
+    Description: "Select true to set up major version upgrade."
     Type: String
   DBBackupRetentionPeriod: 
     Default: "35"
@@ -364,7 +373,6 @@ Conditions:
     - !Ref EnableBastion
     - "true"
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
-
 Resources:
   VPCStack:
     Type: 'AWS::CloudFormation::Stack'
@@ -408,6 +416,7 @@ Resources:
         DBName: !Ref DBName
         DBAutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
         DBAllocatedStorage: !Ref DBAllocatedStorage
+        DBAllowMajorVersionUpgrade: !Ref DBAllowMajorVersionUpgrade
         DBMaxAllocatedStorage: !Ref DBMaxAllocatedStorage
         DBAllocatedStorageEncrypted: !Ref DBAllocatedStorageEncrypted
         DBExportLogToCloudwatch: !Ref DBExportLogToCloudwatch
