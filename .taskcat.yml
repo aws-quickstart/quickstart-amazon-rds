@@ -36,7 +36,7 @@ project:
     KeyPairName: --override--
     QSS3BucketName: $[taskcat_autobucket]
     QSS3BucketRegion: $[taskcat_current_region]
-  template: templates/rds_postgres-main.template.yaml
+  template: templates/postgres-entrypoint-new-vpc.template.yaml
 tests:
   rds-postgresql:
     parameters:
