@@ -1,5 +1,6 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: "Amazon Relational Database Service (RDS) for PostgreSQL; Apache License Version 2.0; September,13,2021 (qs-1saaatk22)"
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  Amazon Relational Database Service (RDS) for PostgreSQL. (qs-1saaatk22)
 Metadata:
   LICENSE: Apache License Version 2.0
   AWS::CloudFormation::Interface:
@@ -128,32 +129,13 @@ Mappings:
     "13.3":
       "family": "postgres13"
 Conditions:
-  EventSubscription:
-    !Equals
-    - !Ref EnableEventSubscription
-    - 'true'
-  DoCreateDatabase:
-    !Not
-      - !Equals
-        - !Ref DBName
-        - ''
-  DBProvisionedIops:
-    !Equals [ !Ref DBStorageType, io1 ]
-  UseEnhancedMonitoring:
-    !Not
-      - !Equals [ !Ref DBMonitoringInterval, 0 ]
-  UseDatabaseEncryption:
-    !Equals
-    - !Ref DBAllocatedStorageEncrypted
-    - "true"
-  EnableDBLogExport:
-    !Equals
-    - !Ref DBExportLogToCloudwatch
-    - "true"
-  CreateSecurityGroup:
-    !Equals
-    - !Ref CustomDBSecurityGroup
-    - ''
+  EventSubscription: !Equals [!Ref EnableEventSubscription, 'true']
+  DoCreateDatabase: !Not [!Equals [!Ref DBName, '']]
+  DBProvisionedIops: !Equals [!Ref DBStorageType, io1]
+  UseEnhancedMonitoring: !Not [!Equals [!Ref DBMonitoringInterval, 0]]
+  UseDatabaseEncryption: !Equals [!Ref DBAllocatedStorageEncrypted, 'true']
+  EnableDBLogExport: !Equals [!Ref DBExportLogToCloudwatch, 'true']
+  CreateSecurityGroup: !Equals [!Ref CustomDBSecurityGroup, '']
 Outputs:
   DBName:
     Description: "Amazon RDS (PostgreSQL) database name"
@@ -184,43 +166,43 @@ Parameters:
     Description: The upper limit in gigabytes to which Amazon RDS can automatically scale the storage
     Type: Number
   DBAllocatedStorageEncrypted:
-    Default: "true"
+    Default: 'true'
     AllowedValues:
-      - "true"
-      - "false"
+      - 'true'
+      - 'false'
     Description: Whether or not to encrypt the database.
     Type: String
   DBIops:
     Default: 3000
     ConstraintDescription: Must be in the range 1,000 - 256,000 IOPS
-    Description: 'Must be in the range of 1,000 - 256,000 IOPS'
+    Description: Must be in the range of 1,000 - 256,000 IOPS
     MinValue: 1000
     MaxValue: 256000
     Type: Number
   DBExportLogToCloudwatch:
-    Default: "true"
+    Default: 'true'
     AllowedValues:
-      - "true"
-      - "false"
+      - 'true'
+      - 'false'
     Description: Whether or not to export Database logs to Cloudwatch
     Type: String
   DBAutoMinorVersionUpgrade:
     AllowedValues:
-      - "true"
-      - "false"
-    Default: "false"
-    Description: "Select true to set up auto minor version upgrade."
+      - 'true'
+      - 'false'
+    Default: 'false'
+    Description: Select true to set up auto minor version upgrade.
     Type: String
   DBAllowMajorVersionUpgrade:
     AllowedValues:
-      - "true"
-      - "false"
-    Default: "false"
-    Description: "Select true to set up major version upgrade."
+      - 'true'
+      - 'false'
+    Default: 'false'
+    Description: Select true to set up major version upgrade.
     Type: String
   DBBackupRetentionPeriod:
-    Default: "35"
-    Description: "The number of days for which automatic database snapshots are retained."
+    Default: 35
+    Description: The number of days for which automatic database snapshots are retained.
     Type: String
   DBEngineVersion:
     Description: Select Database Engine Version
@@ -243,15 +225,15 @@ Parameters:
       - 13.2
       - 13.3
   DBInstanceClass:
-    AllowedPattern: "db\\.[a-z0-9]*\\.[a-z0-9]*"
-    ConstraintDescription: "Must select a valid database instance type."
+    AllowedPattern: ^db\.[a-z0-9]+\.[a-z0-9]+$
+    ConstraintDescription: Must select a valid database instance type.
     Default: db.m6g.large
-    Description: "The name of the compute and memory capacity class of the database instance."
+    Description: The name of the compute and memory capacity class of the database instance.
     Type: String
   DBAccessCIDR:
-    AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
-    ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
-    Description: "Allowed CIDR block for external access (use VPC CIDR)."
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x
+    Description: Allowed CIDR block for external access (use VPC CIDR).
     Type: String
     Default: 10.0.0.0/16
   DBMasterUserPassword:
@@ -260,17 +242,17 @@ Parameters:
     ConstraintDescription: >-
       Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol
     Description: "The database admin account password."
-    MaxLength: "64"
-    MinLength: "8"
-    NoEcho: "True"
+    MaxLength: 64
+    MinLength: 8
+    NoEcho: True
     Type: String
   DBMasterUsername:
-    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
-    ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
+    AllowedPattern: ^[a-zA-Z][a-zA-Z0-9]*$
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
     Default: pgadmin
-    Description: "The database admin account username."
-    MaxLength: "16"
-    MinLength: "1"
+    Description: The database admin account username.
+    MaxLength: 16
+    MinLength: 1
     Type: String
   DBMonitoringInterval:
     AllowedValues:
@@ -281,28 +263,28 @@ Parameters:
       - 30
       - 60
     Default: 60
-    Description: "Enhanced Monitoring metrics interval in seconds. To disable Enhanced Monitoring metrics, specify 0"
+    Description: Enhanced Monitoring metrics interval in seconds. To disable Enhanced Monitoring metrics, specify 0.
     Type: Number
   DBPort:
     Default: 5432
-    Description: "The port the instance will listen for connections on."
+    Description: The port the instance will listen for connections on.
     Type: Number
-    ConstraintDescription: 'Must be in the range [1115-65535].'
+    ConstraintDescription: Must be in the range [1115-65535].
     MinValue: 1150
     MaxValue: 65535
   DBMultiAZ:
     AllowedValues:
-      - "true"
-      - "false"
-    Default: "true"
-    Description: "Specifies if the database instance is a multiple Availability Zone deployment."
+      - 'true'
+      - 'false'
+    Default: 'true'
+    Description: Specifies if the database instance is a multiple Availability Zone deployment.
     Type: String
   DBName:
-    AllowedPattern: "[a-zA-Z0-9]*"
-    Description: "Name of the Amazon RDS (PostgreSQL) database."
-    MaxLength: "64"
-    MinLength: "0"
-    Default: 'RDSPostgresDB'
+    AllowedPattern: ^[a-zA-Z0-9]*$
+    Description: Name of the Amazon RDS (PostgreSQL) database.
+    MaxLength: 64
+    MinLength: 0
+    Default: RDSPostgresDB
     Type: String
   DBStorageType:
     Default: io1
@@ -311,31 +293,31 @@ Parameters:
       - io1
       - gp2
   CustomDBSecurityGroup:
-    Description: "ID of the security group (e.g., sg-0234se). One will be created for you if left empty."
+    Description: ID of the security group (e.g., sg-0234se). One will be created for you if left empty.
     Type: String
     Default: ''
   Subnet1ID:
     Description: The ID of the private subnet in Availability Zone 1.
-    Type: 'AWS::EC2::Subnet::Id'
+    Type: AWS::EC2::Subnet::Id
   Subnet2ID:
     Description: The ID of the private subnet in Availability Zone 2.
-    Type: 'AWS::EC2::Subnet::Id'
+    Type: AWS::EC2::Subnet::Id
   VPCID:
-    Description: "ID of the VPC you are deploying Amazon RDS (PostgreSQL)  into (e.g., vpc-0343606e)."
-    Type: 'AWS::EC2::VPC::Id'
+    Description: ID of the VPC you are deploying Amazon RDS (PostgreSQL)  into (e.g., vpc-0343606e).
+    Type: AWS::EC2::VPC::Id
     Default: ''
   EnableEventSubscription:
     AllowedValues:
-      - "true"
-      - "false"
-    Default: "true"
-    Description: "Enables event subscription to Notification List"
+      - 'true'
+      - 'false'
+    Default: 'true'
+    Description: Enables event subscription to Notification List
     Type: String
   NotificationList:
     Type: String
-    Default: 'db-ops@domain.com'
+    Default: db-ops@domain.com
     Description: The email notification used to configure an SNS topic for sending CloudWatch alarm and RDS event notifications.
-    AllowedPattern: '^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
+    AllowedPattern: ^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$
     ConstraintDescription: Provide a valid email address.
   EnvironmentStage:
     Type: String
@@ -385,15 +367,15 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: 2012-10-17
         Statement:
-          - Effect: "Allow"
+          - Effect: Allow
             Principal:
               Service:
-                - "monitoring.rds.amazonaws.com"
+                - monitoring.rds.amazonaws.com
             Action:
-              - "sts:AssumeRole"
-      Path: "/"
+              - sts:AssumeRole
+      Path: /
       ManagedPolicyArns:
         - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole
   DBSNSTopic:
@@ -417,9 +399,9 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: F19
-            reason: "Key rotation would cause the database to become inaccessible"
+            reason: Key rotation would cause the database to become inaccessible
           - id: F76
-            reason: "Conditions are included in the policy to limit its scope"
+            reason: Conditions are included in the policy to limit its scope
     Properties:
       KeyPolicy:
         Version: 2012-10-17
@@ -428,8 +410,8 @@ Resources:
           - Effect: Allow
             Principal:
               AWS:
-                - !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:root"
-            Action: 'kms:*'
+                - !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:root
+            Action: kms:*
             Resource: '*'
       Tags:
         - Key: Name
@@ -438,18 +420,18 @@ Resources:
     Condition: UseDatabaseEncryption
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: !Sub "alias/${AWS::StackName}"
+      AliasName: !Sub alias/${AWS::StackName}
       TargetKeyId: !Ref EncryptionKey
   DBParamGroup:
     Type: AWS::RDS::DBParameterGroup
     Properties:
-      Description: !Join [ "- ", [ "RDS PostgreSQL Database Instance Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
-      Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"]
+      Description: !Join ['- ', [RDS PostgreSQL Database Instance Parameter Group for Cloudformation Stack, !Ref DBName]]
+      Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, family]
       Parameters:
-        log_rotation_age: '1440'
-        log_rotation_size: '102400'
+        log_rotation_age: 1440
+        log_rotation_size: 102400
   RDSDBInstance:
-    Type: "AWS::RDS::DBInstance"
+    Type: AWS::RDS::DBInstance
     Metadata:
       cfn-lint:
         config:
@@ -464,21 +446,21 @@ Resources:
       DBInstanceClass: !Ref DBInstanceClass
       DBSubnetGroupName: !Ref RDSDBSubnetGroup
       EnableCloudwatchLogsExports:
-        - !If [EnableDBLogExport, postgresql, !Ref 'AWS::NoValue']
-      DBName: !If [DoCreateDatabase, !Ref DBName, !Ref 'AWS::NoValue']
+        - !If [EnableDBLogExport, postgresql, !Ref AWS::NoValue]
+      DBName: !If [DoCreateDatabase, !Ref DBName, !Ref AWS::NoValue]
       Engine: postgres
       EngineVersion: !Ref DBEngineVersion
-      KmsKeyId: !If [UseDatabaseEncryption, !GetAtt EncryptionKey.Arn, !Ref 'AWS::NoValue']
+      KmsKeyId: !If [UseDatabaseEncryption, !GetAtt EncryptionKey.Arn, !Ref AWS::NoValue]
       MasterUserPassword: !Ref DBMasterUserPassword
       MasterUsername: !Ref DBMasterUsername
       MaxAllocatedStorage: !Ref DBMaxAllocatedStorage
       MonitoringInterval: !Ref DBMonitoringInterval
-      MonitoringRoleArn: !If [UseEnhancedMonitoring, !GetAtt MonitoringIAMRole.Arn, !Ref 'AWS::NoValue']
+      MonitoringRoleArn: !If [UseEnhancedMonitoring, !GetAtt MonitoringIAMRole.Arn, !Ref AWS::NoValue]
       Port: !Ref DBPort
       PubliclyAccessible: false
       StorageType: !Ref DBStorageType
-      Iops: !If [DBProvisionedIops, !Ref DBIops, !Ref 'AWS::NoValue']
-      StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref 'AWS::NoValue']
+      Iops: !If [DBProvisionedIops, !Ref DBIops, !Ref AWS::NoValue]
+      StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref AWS::NoValue]
       MultiAZ: !Ref DBMultiAZ
       Tags:
         -
@@ -507,20 +489,20 @@ Resources:
     UpdateReplacePolicy: Snapshot
   RDSDBSubnetGroup:
     Properties:
-      DBSubnetGroupDescription: "Subnets available for the Amazon RDS (PostgreSQL) database instance"
+      DBSubnetGroupDescription: Subnets available for the Amazon RDS (PostgreSQL) database instance
       SubnetIds:
        - !Ref Subnet1ID
        - !Ref Subnet2ID
-    Type: "AWS::RDS::DBSubnetGroup"
+    Type: AWS::RDS::DBSubnetGroup
   RDSSecurityGroup:
     Condition: CreateSecurityGroup
     Properties:
-      GroupDescription: "Allow access to database port"
+      GroupDescription: Allow access to database port
       SecurityGroupEgress:
         -
           CidrIp: 0.0.0.0/0
           FromPort: -1
-          IpProtocol: '-1'
+          IpProtocol: -1
           ToPort: -1
       SecurityGroupIngress:
         -
@@ -532,78 +514,78 @@ Resources:
       Tags:
       - Key: Name
         Value: !Sub RDSSecurityGroup-${AWS::StackName}
-    Type: "AWS::EC2::SecurityGroup"
+    Type: AWS::EC2::SecurityGroup
   RDSSecurityGroupIngress:
     Condition: CreateSecurityGroup
     Properties:
-      GroupId: !GetAtt 'RDSSecurityGroup.GroupId'
-      IpProtocol: '-1'
+      GroupId: !GetAtt RDSSecurityGroup.GroupId
+      IpProtocol: -1
       SourceSecurityGroupId: !Ref RDSSecurityGroup
-      Description: 'Self Reference'
-    Type: 'AWS::EC2::SecurityGroupIngress'
+      Description: Self Reference
+    Type: AWS::EC2::SecurityGroupIngress
   CPUUtilizationAlarm:
-    Type: "AWS::CloudWatch::Alarm"
+    Type: AWS::CloudWatch::Alarm
     Properties:
       ActionsEnabled: true
       AlarmActions:
       - Ref: DBSNSTopic
-      AlarmDescription: 'CPU_Utilization'
+      AlarmDescription: CPU_Utilization
       Dimensions:
-      - Name: DBInstanceIdentifier
+        - Name: DBInstanceIdentifier
         Value:
           Ref: RDSDBInstance
       MetricName: CPUUtilization
       Statistic: Maximum
-      Namespace: 'AWS/RDS'
+      Namespace: AWS/RDS
       Threshold: 80
       Unit: Percent
-      ComparisonOperator: 'GreaterThanOrEqualToThreshold'
+      ComparisonOperator: GreaterThanOrEqualToThreshold
       Period: 60
       EvaluationPeriods: 5
-      TreatMissingData: 'notBreaching'
+      TreatMissingData: notBreaching
   MaxUsedTxIDsAlarm:
-    Type: "AWS::CloudWatch::Alarm"
+    Type: AWS::CloudWatch::Alarm
     Properties:
       ActionsEnabled: true
       AlarmActions:
       - Ref: DBSNSTopic
-      AlarmDescription: 'Maximum Used Transaction IDs'
+      AlarmDescription: Maximum Used Transaction IDs
       Dimensions:
       - Name: DBInstanceIdentifier
         Value:
           Ref: RDSDBInstance
-      MetricName: 'MaximumUsedTransactionIDs'
+      MetricName: MaximumUsedTransactionIDs
       Statistic: Average
-      Namespace: 'AWS/RDS'
+      Namespace: AWS/RDS
       Threshold: 600000000
       Unit: Count
-      ComparisonOperator: 'GreaterThanOrEqualToThreshold'
+      ComparisonOperator: GreaterThanOrEqualToThreshold
       Period: 60
       EvaluationPeriods: 5
-      TreatMissingData: 'notBreaching'
+      TreatMissingData: notBreaching
   FreeLocalStorageAlarm:
-    Type: "AWS::CloudWatch::Alarm"
+    Type: AWS::CloudWatch::Alarm
     Properties:
       ActionsEnabled: true
       AlarmActions:
       - Ref: DBSNSTopic
-      AlarmDescription: 'Free Local Storage'
+      AlarmDescription: Free Local Storage
       Dimensions:
       - Name: DBInstanceIdentifier
         Value:
           Ref: RDSDBInstance
-      MetricName: 'FreeLocalStorage'
+      MetricName: FreeLocalStorage
       Statistic: Average
-      Namespace: 'AWS/RDS'
+      Namespace: AWS/RDS
       Threshold: 5368709120
       Unit: Bytes
-      ComparisonOperator: 'LessThanOrEqualToThreshold'
+      ComparisonOperator: LessThanOrEqualToThreshold
       Period: 60
       EvaluationPeriods: 5
-      TreatMissingData: 'notBreaching'
+      TreatMissingData: notBreaching
   DatabaseInstanceEventSubscription:
     Condition: EventSubscription
-    Type: 'AWS::RDS::EventSubscription'
+    Type: AWS::RDS::EventSubscription
     Properties:
       EventCategories:
       - availability
@@ -617,14 +599,14 @@ Resources:
       SnsTopicArn: !Ref DBSNSTopic
       SourceIds:
       - !Ref RDSDBInstance
-      SourceType: 'db-instance'
+      SourceType: db-instance
   DBParameterGroupEventSubscription:
     Condition: EventSubscription
-    Type: 'AWS::RDS::EventSubscription'
+    Type: AWS::RDS::EventSubscription
     Properties:
       EventCategories:
-      - "configuration change"
+        - configuration change
       SnsTopicArn: !Ref DBSNSTopic
       SourceIds:
       - !Ref DBParamGroup
-      SourceType: 'db-parameter-group'
+      SourceType: db-parameter-group

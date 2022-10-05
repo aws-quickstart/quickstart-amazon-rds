@@ -1,4 +1,7 @@
-Description: "AWS VPC + Amazon Relational Database Service (RDS) for PostgreSQL (qs-1saaatk1o)"
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  AWS VPC + Amazon Relational Database Service (RDS) for PostgreSQL.
+  (qs-1saaatk1o)
 Metadata:
   LICENSE: Apache License Version 2.0
   AWS::CloudFormation::Interface:
@@ -127,11 +130,11 @@ Parameters:
       List of Availability Zones to use for the subnets in the VPC. Only two
       Availability Zones are used for this deployment, and the logical order of
       your selections is preserved.
-   Type: 'List<AWS::EC2::AvailabilityZone::Name>'
+   Type: List<AWS::EC2::AvailabilityZone::Name>
   KeyPairName:
-    ConstraintDescription: "Name of an existing EC2 key pair."
+    ConstraintDescription: Name of an existing EC2 key pair.
     Description: Name of an existing public/private key pair, for connecting to your instance.
-    Type: "AWS::EC2::KeyPair::KeyName"
+    Type: AWS::EC2::KeyPair::KeyName
   PrivateSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
@@ -157,9 +160,9 @@ Parameters:
     Description: CIDR block for the public subnet 2 located in Availability Zone 2.
     Type: String
   RemoteAccessCIDR:
-    AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
-    ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
-    Description: "Allowed CIDR block for external SSH access."
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x
+    Description: Allowed CIDR block for external SSH access.
     Default: 10.0.0.0/16
     Type: String
   VPCCIDR:
@@ -169,27 +172,27 @@ Parameters:
     Description: CIDR block for the VPC.
     Type: String
   QSS3BucketName:
-    AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
-    ConstraintDescription: "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).
     Default: aws-quickstart
-    Description: "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+    Description: S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).
     Type: String
   QSS3BucketRegion:
-    Default: 'us-east-1'
-    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
+    Default: us-east-1
+    Description: The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.
     Type: String
   QSS3KeyPrefix:
-    AllowedPattern: "^[0-9a-zA-Z-/]*$"
-    ConstraintDescription: "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).
     Default: quickstart-amazon-rds-postgres/
-    Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
+    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).
     Type: String
-  EnableBastion: 
-    AllowedValues: 
-      - "true"
-      - "false"
-    Default: "true"
-    Description: "If true, a bastion stack will be created."
+  EnableBastion:
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Default: 'true'
+    Description: If true, a bastion stack will be created.
     Type: String
   DBAllocatedStorage:
     Default: 100
@@ -200,17 +203,24 @@ Parameters:
     Description: The upper limit in gigabytes to which Amazon RDS can automatically scale the storage
     Type: Number
   DBAllocatedStorageEncrypted:
-    Default: "true"
+    Default: 'true'
     AllowedValues:
-      - "true"
-      - "false"
+      - 'true'
+      - 'false'
     Description: Whether or not to encrypt the database.
     Type: String
+  DBIops:
+    Type: Number
+    Description: Must be in the range of 1,000 - 256,000 IOPS.
+    MinValue: 1000
+    MaxValue: 256000
+    ConstraintDescription: Must be in the range 1,000 - 256,000 IOPS.
+    Default: 3000
   DBExportLogToCloudwatch:
-    Default: "true"
+    Default: 'true'
     AllowedValues:
-      - "true"
-      - "false"
+      - 'true'
+      - 'false'
     Description: Whether or not to export Database logs to Cloudwatch
     Type: String
   EnableTCPForwarding:
@@ -222,21 +232,21 @@ Parameters:
       - 'false'
   DBAutoMinorVersionUpgrade: 
     AllowedValues: 
-      - "true"
-      - "false"
-    Default: "false"
-    Description: "Select true to set up auto minor version upgrade."
+      - 'true'
+      - 'false'
+    Default: 'false'
+    Description: Select true to set up auto minor version upgrade.
     Type: String
   DBAllowMajorVersionUpgrade:
     AllowedValues:
-      - "true"
-      - "false"
-    Default: "false"
-    Description: "Select true to set up major version upgrade."
+      - 'true'
+      - 'false'
+    Default: 'false'
+    Description: Select true to set up major version upgrade.
     Type: String
   DBBackupRetentionPeriod: 
-    Default: "35"
-    Description: "The number of days for which automatic database snapshots are retained."
+    Default: 35
+    Description: The number of days for which automatic database snapshots are retained.
     Type: String
   DBEngineVersion:
     Description: Select Database Engine Version
@@ -259,26 +269,25 @@ Parameters:
       - 13.2
       - 13.3
   DBInstanceClass:
-    AllowedPattern: "db\\.[a-z0-9]*\\.[a-z0-9]*"
-    ConstraintDescription: "Must select a valid database instance type."
+    AllowedPattern: ^db\.[a-z0-9]+\.[a-z0-9]+$
+    ConstraintDescription: Must select a valid database instance type.
     Default: db.m6g.large
-    Description: "The name of the compute and memory capacity class of the database instance."
+    Description: The name of the compute and memory capacity class of the database instance.
     Type: String
-  DBMasterUserPassword:
-    AllowedPattern: "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*"
-    ConstraintDescription: "Min 8 chars."
-    Description: "The database admin account password."
-    MaxLength: "64"
-    MinLength: "8"
-    NoEcho: "True"
-    Type: String
-  DBMasterUsername:
-    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
-    ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
+    AllowedPattern: ^[^/'\"@]+$
+    ConstraintDescription: >-
+      8 to 128 printable ASCII characters. Can''t contain any of the following:
+      slash (/), single quote (''), double quote ("), or at sign (@).
+    Description: The database admin account password.
+    MaxLength: 128
+    MinLength: 8
+    NoEcho: True
+    AllowedPattern: ^[a-zA-Z][a-zA-Z0-9]*$
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
     Default: pgadmin
-    Description: "The database admin account username."
-    MaxLength: "16"
-    MinLength: "1"
+    Description: The database admin account username.
+    MaxLength: 16
+    MinLength: 1
     Type: String
   DBMonitoringInterval:
     AllowedValues:
@@ -289,41 +298,41 @@ Parameters:
       - 30
       - 60
     Default: 60
-    Description: "Enhanced Monitoring metrics interval in seconds. To disable Enhanced Monitoring metrics, specify 0."
+    Description: Enhanced Monitoring metrics interval in seconds. To disable Enhanced Monitoring metrics, specify 0.
     Type: Number
   DBPort:
     Default: 5432
-    Description: "The port the instance will listen for connections on."
+    Description: The port the instance will listen for connections on.
     Type: Number
-    ConstraintDescription: 'Must be in the range [1115-65535].'
+    ConstraintDescription: Must be in the range [1115-65535].
     MinValue: 1150
     MaxValue: 65535
   DBMultiAZ: 
     AllowedValues: 
-      - "true"
-      - "false"
-    Default: "true"
-    Description: "Specifies if the database instance is a multiple Availability Zone deployment."
+      - 'true'
+      - 'false'
+    Default: 'true'
+    Description: Specifies if the database instance is a multiple Availability Zone deployment.
     Type: String
   DBName: 
-    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
-    Default: 'RDSPostgresDB'
-    Description: "Name of the Amazon RDS (PostgreSQL) database."
-    MaxLength: "64"
-    MinLength: "5"
+    AllowedPattern: ^[a-zA-Z][a-zA-Z0-9]*$
+    Default: RDSPostgresDB
+    Description: Name of the Amazon RDS (PostgreSQL) database.
+    MaxLength: 64
+    MinLength: 5
     Type: String
   EnableEventSubscription: 
     AllowedValues: 
-      - "true"
-      - "false"
-    Default: "true"
-    Description: "Enables event subscription to Notification List"
+      - 'true'
+      - 'false'
+    Default: 'true'
+    Description: Enables event subscription to Notification List
     Type: String
   NotificationList:
     Type: String
-    Default: 'db-ops@domain.com'
+    Default: db-ops@domain.com
     Description: The Email notification is used to configure a SNS topic for sending cloudwatch alarm and RDS Event notifications
-    AllowedPattern: '^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
+    AllowedPattern: ^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$
     ConstraintDescription: provide a valid email address.
   EnvironmentStage:
     Type: String
@@ -369,24 +378,19 @@ Parameters:
       - other
       - ''
 Conditions:
-  EnableBastionAccess: !Equals
-    - !Ref EnableBastion
-    - "true"
-  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  EnableBastionAccess: !Equals [!Ref EnableBastion, 'true']
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, aws-quickstart]
 Resources:
   VPCStack:
-    Type: 'AWS::CloudFormation::Stack'
+    Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL:
-        Fn::Sub:
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
-          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      TemplateURL: !Sub
+        - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml
+        - S3Region: !If [UsingDefaultBucket, !Ref AWS::Region, !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
-        AvailabilityZones: !Join 
-          - ','
-          - !Ref AvailabilityZones
-        NumberOfAZs: '2'
+        AvailabilityZones: !Join [',', !Ref AvailabilityZones]
+        NumberOfAZs: 2
         PrivateSubnet1ACIDR: !Ref PrivateSubnet1CIDR
         PrivateSubnet2ACIDR: !Ref PrivateSubnet2CIDR
         PublicSubnet1CIDR: !Ref PublicSubnet1CIDR
@@ -397,8 +401,8 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/rds_postgres.template.yaml'
-          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/rds_postgres.template.yaml
+          - S3Region: !If [UsingDefaultBucket, !Ref AWS::Region, !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         Subnet1ID:
@@ -439,12 +443,12 @@ Resources:
         Compliance: !Ref Compliance
   BastionStack:
     Condition: EnableBastionAccess
-    Type: 'AWS::CloudFormation::Stack'
+    Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL:
         !Sub
           - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion-entrypoint-existing-vpc.template.yaml
-          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          - S3Region: !If [UsingDefaultBucket, !Ref AWS::Region, !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         KeyPairName: !Ref KeyPairName
