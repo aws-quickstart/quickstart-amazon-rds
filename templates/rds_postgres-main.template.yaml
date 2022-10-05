@@ -251,23 +251,32 @@ Parameters:
   DBEngineVersion:
     Description: Select Database Engine Version
     Type: String
-    Default: 13.3
+    Default: 14.4
     AllowedValues:
-      - 9.6.20
-      - 9.6.21
-      - 9.6.22
-      - 10.15
-      - 10.16
       - 10.17
-      - 11.10
-      - 11.11
+      - 10.18
+      - 10.19
+      - 10.20
+      - 10.21
       - 11.12
-      - 12.5
-      - 12.6
+      - 11.13
+      - 11.14
+      - 11.15
+      - 11.16
       - 12.7
-      - 13.1
-      - 13.2
+      - 12.8
+      - 12.9
+      - 12.10
+      - 12.11
       - 13.3
+      - 13.4
+      - 13.5
+      - 13.6
+      - 13.7
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
   DBInstanceClass:
     AllowedPattern: ^db\.[a-z0-9]+\.[a-z0-9]+$
     ConstraintDescription: Must select a valid database instance type.
