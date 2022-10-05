@@ -508,12 +508,11 @@ Resources:
     Properties:
       ActionsEnabled: true
       AlarmActions:
-      - Ref: DBSNSTopic
+        - !Ref DBSNSTopic
       AlarmDescription: CPU_Utilization
       Dimensions:
         - Name: DBInstanceIdentifier
-        Value:
-          Ref: RDSDBInstance
+          Value: !Ref RDSDBInstance
       MetricName: CPUUtilization
       Statistic: Maximum
       Namespace: AWS/RDS
@@ -528,12 +527,11 @@ Resources:
     Properties:
       ActionsEnabled: true
       AlarmActions:
-      - Ref: DBSNSTopic
+        - !Ref DBSNSTopic
       AlarmDescription: Maximum Used Transaction IDs
       Dimensions:
-      - Name: DBInstanceIdentifier
-        Value:
-          Ref: RDSDBInstance
+        - Name: DBInstanceIdentifier
+          Value: !Ref RDSDBInstance
       MetricName: MaximumUsedTransactionIDs
       Statistic: Average
       Namespace: AWS/RDS
@@ -548,12 +546,11 @@ Resources:
     Properties:
       ActionsEnabled: true
       AlarmActions:
-      - Ref: DBSNSTopic
+        - !Ref DBSNSTopic
       AlarmDescription: Free Local Storage
       Dimensions:
-      - Name: DBInstanceIdentifier
-        Value:
-          Ref: RDSDBInstance
+        - Name: DBInstanceIdentifier
+          Value: !Ref RDSDBInstance
       MetricName: FreeLocalStorage
       Statistic: Average
       Namespace: AWS/RDS
@@ -578,7 +575,7 @@ Resources:
       - recovery
       SnsTopicArn: !Ref DBSNSTopic
       SourceIds:
-      - !Ref RDSDBInstance
+        - !Ref RDSDBInstance
       SourceType: db-instance
   DBParameterGroupEventSubscription:
     Condition: EventSubscription
@@ -588,7 +585,7 @@ Resources:
         - configuration change
       SnsTopicArn: !Ref DBSNSTopic
       SourceIds:
-      - !Ref DBParamGroup
+        - !Ref DBParamGroup
       SourceType: db-parameter-group
 Outputs:
   DBName:

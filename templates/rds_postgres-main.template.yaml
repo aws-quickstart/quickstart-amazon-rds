@@ -405,18 +405,9 @@ Resources:
           - S3Region: !If [UsingDefaultBucket, !Ref AWS::Region, !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
-        Subnet1ID:
-          Fn::GetAtt:
-          - VPCStack
-          - Outputs.PrivateSubnet1AID
-        Subnet2ID:
-          Fn::GetAtt:
-          - VPCStack
-          - Outputs.PrivateSubnet2AID
-        VPCID:
-          Fn::GetAtt:
-          - VPCStack
-          - Outputs.VPCID
+        Subnet1ID: !GetAtt VPCStack.Outputs.PrivateSubnet1AID
+        Subnet2ID: !GetAtt VPCStack.Outputs.PrivateSubnet2AID
+        VPCID: !GetAtt VPCStack.Outputs.VPCID
         DBName: !Ref DBName
         DBAutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
         DBAllocatedStorage: !Ref DBAllocatedStorage
@@ -452,17 +443,11 @@ Resources:
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         KeyPairName: !Ref KeyPairName
-        PublicSubnet1ID: !GetAtt 
-          - VPCStack
-          - Outputs.PublicSubnet1ID
-        PublicSubnet2ID: !GetAtt 
-          - VPCStack
-          - Outputs.PublicSubnet2ID
+        PublicSubnet1ID: !GetAtt VPCStack.Outputs.PublicSubnet1ID
+        PublicSubnet2ID: !GetAtt VPCStack.Outputs.PublicSubnet2ID
         EnableTCPForwarding: !Ref EnableTCPForwarding
         RemoteAccessCIDR: !Ref RemoteAccessCIDR
-        VPCID: !GetAtt 
-          - VPCStack
-          - Outputs.VPCID
+        VPCID: !GetAtt VPCStack.Outputs.VPCID
         QSS3BucketName: !Ref QSS3BucketName
         QSS3BucketRegion: !Ref QSS3BucketRegion
         QSS3KeyPrefix: !Sub ${QSS3KeyPrefix}submodules/quickstart-linux-bastion/
