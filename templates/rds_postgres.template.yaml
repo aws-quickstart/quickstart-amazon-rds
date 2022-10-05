@@ -311,6 +311,9 @@ Parameters:
   DBStorageType:
     Default: io1
     Type: String
+    Description: >-
+      Storage type. For additional information, see:
+      https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html.
     AllowedValues:
       - io1
       - gp2

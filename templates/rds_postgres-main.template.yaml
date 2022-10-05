@@ -270,7 +270,7 @@ Parameters:
     Description: The number of days for which automatic database snapshots are retained.
     Type: String
   DBEngineVersion:
-    Description: Select Database Engine Version
+    Description: Select database engine version.
     Type: String
     Default: 14.4
     AllowedValues:
