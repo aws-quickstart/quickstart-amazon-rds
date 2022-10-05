@@ -136,26 +136,6 @@ Conditions:
   UseDatabaseEncryption: !Equals [!Ref DBAllocatedStorageEncrypted, 'true']
   EnableDBLogExport: !Equals [!Ref DBExportLogToCloudwatch, 'true']
   CreateSecurityGroup: !Equals [!Ref CustomDBSecurityGroup, '']
-Outputs:
-  DBName:
-    Description: "Amazon RDS (PostgreSQL) database name"
-    Value: !Ref DBName
-  DBMasterUsername:
-    Description: "Amazon RDS (PostgreSQL) master username"
-    Value: !Ref DBMasterUsername
-  RDSEndPointAddress:
-    Description: "Amazon RDS (PostgreSQL) endpoint"
-    Value: !Sub ${RDSDBInstance.Endpoint.Address}
-  RDSEndPointPort:
-    Description: "Amazon RDS (PostgreSQL) endpoint port"
-    Value: !Sub ${RDSDBInstance.Endpoint.Port}
-  RDSEndPoints:
-    Description: "Amazon RDS (PostgreSQL) write endpoint"
-    Value: !Sub ${RDSDBInstance.Endpoint.Address}:${RDSDBInstance.Endpoint.Port}/${DBName}
-  RDSEncryptionKey:
-    Condition: UseDatabaseEncryption
-    Description: The alias of the encryption key created for RDS
-    Value: !Ref EncryptionKeyAlias
 Parameters:
   DBAllocatedStorage:
     Default: 100
@@ -610,3 +590,23 @@ Resources:
       SourceIds:
       - !Ref DBParamGroup
       SourceType: db-parameter-group
+Outputs:
+  DBName:
+    Description: Amazon RDS (PostgreSQL) database name
+    Value: !Ref DBName
+  DBUsername:
+    Description: Amazon RDS (PostgreSQL) database username.
+    Value: !Ref DBUsername
+  RDSEndPointAddress:
+    Description: Amazon RDS (PostgreSQL) endpoint
+    Value: !GetAtt RDSDBInstance.Endpoint.Address
+  RDSEndPointPort:
+    Description: Amazon RDS (PostgreSQL) endpoint port
+    Value: !GetAtt RDSDBInstance.Endpoint.Port
+  RDSEndPoints:
+    Description: Amazon RDS (PostgreSQL) write endpoint
+    Value: !Sub ${RDSDBInstance.Endpoint.Address}:${RDSDBInstance.Endpoint.Port}/${DBName}
+  RDSEncryptionKey:
+    Condition: UseDatabaseEncryption
+    Description: The alias of the encryption key created for RDS
+    Value: !Ref EncryptionKeyAlias
