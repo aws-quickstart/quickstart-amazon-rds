@@ -56,17 +56,17 @@ Metadata:
       DBName:
         default: Database name
       DBEngineVersion:
-        default: Database Engine Version
+        default: Database engine version
       DBAllocatedStorageEncrypted:
-        default: Database encryption enabled
+        default: Enable encryption
       DBExportLogToCloudwatch:
-        default: Export Database Log to Cloudwatch
+        default: Export database log to CloudWatch
       DBAutoMinorVersionUpgrade:
-        default: Database auto minor version upgrade
+        default: Auto minor version upgrade
       DBAllowMajorVersionUpgrade:
         default: Database allow major version upgrade
       DBBackupRetentionPeriod:
-        default: Database backup retention period
+        default: Backup retention period
       DBInstanceClass:
         default: Database instance class
       DBUsername:
@@ -74,7 +74,7 @@ Metadata:
       DBPassword:
         default: Password
       DBPort:
-        default: Database port
+        default: Port
       DBAccessCIDR:
         default: Database connection CIDR
       DBMultiAZ:

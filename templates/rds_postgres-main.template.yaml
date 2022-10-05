@@ -72,13 +72,13 @@ Metadata:
       AvailabilityZones:
         default: Availability Zones
       DBEngineVersion:
-        default: Database Engine Version
+        default: Engine version
       DBName:
-        default: Database name
+        default: Name
       DBAllocatedStorageEncrypted:
-        default: Database encryption enabled
+        default: Enable encryption
       DBExportLogToCloudwatch:
-        default: Export Database Log to Cloudwatch
+        default: Export database log to CloudWatch
       DBAutoMinorVersionUpgrade:
         default: Database auto minor version upgrade
       DBAllowMajorVersionUpgrade:
@@ -92,13 +92,17 @@ Metadata:
       DBPassword:
         default: Password
       DBPort:
-        default: Database port
+        default: Port
+      DBAccessCIDR:
+        default: Database connection CIDR
       DBMultiAZ:
         default: Multi-AZ deployment
+      DBMonitoringInterval:
+        default: Monitoring interval
       EnableBastion:
         default: Create bastion stack
       EnableTCPForwarding:
-        default: Enable TCP Forwarding
+        default: Enable TCP forwarding
       PrivateSubnet1CIDR:
         default: Private subnet 1 CIDR
       PrivateSubnet2CIDR:
@@ -108,15 +112,15 @@ Metadata:
       PublicSubnet2CIDR:
         default: Public subnet 2 CIDR
       QSS3BucketName:
-        default: Quick Start S3 bucket name
+        default: Bucket name
       QSS3BucketRegion:
-        default: Quick Start S3 bucket region
+        default: Bucket region
       QSS3KeyPrefix:
-        default: Quick Start S3 key prefix
+        default: Key prefix
       VPCCIDR:
         default: VPC CIDR
       EnableEventSubscription:
-        default: Enable Event Subscription
+        default: Enable event subscription
       NotificationList:
         default: SNS notification email
       EnvironmentStage:
@@ -132,7 +136,7 @@ Metadata:
       ProjectCostCenter:
         default: Project cost center
       KeyPairName:
-        default: Key Name
+        default: Key name
       RemoteAccessCIDR:
         default: Permitted IP range
   cfn-lint:
