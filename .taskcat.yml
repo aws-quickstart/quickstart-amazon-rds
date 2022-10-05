@@ -30,6 +30,7 @@ project:
     - us-gov-west-1
     - cn-north-1
     - cn-northwest-1
+  template: templates/rds_postgres-main.template.yaml
 tests:
   rds-postgresql:
     parameters:
@@ -45,4 +46,3 @@ tests:
       RemoteAccessCIDR: 10.0.0.0/16
     regions:
       - us-west-2
-    template: templates/rds_postgres-main.template.yaml
