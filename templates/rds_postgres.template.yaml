@@ -5,45 +5,45 @@ Metadata:
   LICENSE: Apache License Version 2.0
   AWS::CloudFormation::Interface:
     ParameterGroups:
-    - Label:
-        default: Network configuration
-      Parameters:
-      - VPCID
-      - Subnet1ID
-      - Subnet2ID
-      - CustomDBSecurityGroup
-    - Label:
-        default: Database configuration
-      Parameters:
-      - DBName
-      - DBAccessCIDR
-      - DBAutoMinorVersionUpgrade
-      - DBAllowMajorVersionUpgrade
-      - DBBackupRetentionPeriod
-      - DBEngineVersion
-      - DBInstanceClass
-      - DBUsername
-      - DBPassword
-      - DBPort
-      - DBAllocatedStorage
-      - DBMaxAllocatedStorage
-      - DBStorageType
-      - DBIops
-      - DBAllocatedStorageEncrypted
-      - DBExportLogToCloudwatch
-      - DBMultiAZ
-      - DBMonitoringInterval
-      - EnableEventSubscription
-      - NotificationList
-    - Label:
-        default: Database tags (optional)
-      Parameters:
-      - EnvironmentStage
-      - Application
-      - ApplicationVersion
-      - ProjectCostCenter
-      - Confidentiality
-      - Compliance
+      - Label:
+          default: Network configuration
+        Parameters:
+          - VPCID
+          - Subnet1ID
+          - Subnet2ID
+          - CustomDBSecurityGroup
+      - Label:
+          default: Database configuration
+        Parameters:
+          - DBName
+          - DBAccessCIDR
+          - DBAutoMinorVersionUpgrade
+          - DBAllowMajorVersionUpgrade
+          - DBBackupRetentionPeriod
+          - DBEngineVersion
+          - DBInstanceClass
+          - DBUsername
+          - DBPassword
+          - DBPort
+          - DBAllocatedStorage
+          - DBMaxAllocatedStorage
+          - DBStorageType
+          - DBIops
+          - DBAllocatedStorageEncrypted
+          - DBExportLogToCloudwatch
+          - DBMultiAZ
+          - DBMonitoringInterval
+          - EnableEventSubscription
+          - NotificationList
+      - Label:
+          default: Database tags (optional)
+        Parameters:
+          - EnvironmentStage
+          - Application
+          - ApplicationVersion
+          - ProjectCostCenter
+          - Confidentiality
+          - Compliance
     ParameterLabels:
       DBAllocatedStorage:
         default: Amount of storage (in gigabytes)

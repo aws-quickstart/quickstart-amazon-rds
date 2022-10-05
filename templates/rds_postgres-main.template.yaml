@@ -6,60 +6,60 @@ Metadata:
   LICENSE: Apache License Version 2.0
   AWS::CloudFormation::Interface:
     ParameterGroups:
-    - Label:
-        default: Network configuration
-      Parameters:
-      - KeyPairName
-      - AvailabilityZones
-      - VPCCIDR
-      - PrivateSubnet1CIDR
-      - PrivateSubnet2CIDR
-      - PublicSubnet1CIDR
-      - PublicSubnet2CIDR
-    - Label:
-        default: Linux bastion configuration
-      Parameters:
-       - EnableBastion
-       - RemoteAccessCIDR
-       - EnableTCPForwarding
-    - Label:
-        default: Database configuration
-      Parameters:
-      - DBName
-      - DBAccessCIDR
-      - DBAutoMinorVersionUpgrade
-      - DBAllowMajorVersionUpgrade
-      - DBBackupRetentionPeriod
-      - DBEngineVersion
-      - DBInstanceClass
-      - DBUsername
-      - DBPassword
-      - DBPort
-      - DBAllocatedStorage
-      - DBMaxAllocatedStorage
-      - DBStorageType
-      - DBIops
-      - DBAllocatedStorageEncrypted
-      - DBExportLogToCloudwatch
-      - DBMultiAZ
-      - DBMonitoringInterval
-      - EnableEventSubscription
-      - NotificationList
-    - Label:
-        default: Database tags (optional)
-      Parameters:
-      - EnvironmentStage
-      - Application
-      - ApplicationVersion
-      - ProjectCostCenter
-      - Confidentiality
-      - Compliance
-    - Label:
-        default: Quick Start configuration
-      Parameters:
-      - QSS3BucketName
-      - QSS3BucketRegion
-      - QSS3KeyPrefix
+      - Label:
+          default: Network configuration
+        Parameters:
+          - KeyPairName
+          - AvailabilityZones
+          - VPCCIDR
+          - PrivateSubnet1CIDR
+          - PrivateSubnet2CIDR
+          - PublicSubnet1CIDR
+          - PublicSubnet2CIDR
+      - Label:
+          default: Linux bastion configuration
+        Parameters:
+          - EnableBastion
+          - RemoteAccessCIDR
+          - EnableTCPForwarding
+      - Label:
+          default: Database configuration
+        Parameters:
+          - DBName
+          - DBAccessCIDR
+          - DBAutoMinorVersionUpgrade
+          - DBAllowMajorVersionUpgrade
+          - DBBackupRetentionPeriod
+          - DBEngineVersion
+          - DBInstanceClass
+          - DBUsername
+          - DBPassword
+          - DBPort
+          - DBAllocatedStorage
+          - DBMaxAllocatedStorage
+          - DBStorageType
+          - DBIops
+          - DBAllocatedStorageEncrypted
+          - DBExportLogToCloudwatch
+          - DBMultiAZ
+          - DBMonitoringInterval
+          - EnableEventSubscription
+          - NotificationList
+      - Label:
+          default: Database tags (optional)
+        Parameters:
+          - EnvironmentStage
+          - Application
+          - ApplicationVersion
+          - ProjectCostCenter
+          - Confidentiality
+          - Compliance
+      - Label:
+          default: Quick Start configuration
+        Parameters:
+          - QSS3BucketName
+          - QSS3BucketRegion
+          - QSS3KeyPrefix
     ParameterLabels:
       DBAllocatedStorage:
         default: Amount of storage (in gigabytes)
