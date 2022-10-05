@@ -139,12 +139,6 @@ Metadata:
         default: Key name
       RemoteAccessCIDR:
         default: Permitted IP range
-  cfn-lint:
-    config:
-      ignore_checks:
-        - E9101
-      ignore_reasons:
-        - E9101: Not applicable as AWS::RDS::DBInstance has properties called “MasterUsername” and “MasterUserPassword
 Parameters:
   AvailabilityZones:
    Description: >-

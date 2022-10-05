@@ -105,12 +105,6 @@ Metadata:
        default: Confidentiality classifier
       ProjectCostCenter:
        default: Project cost center
-  cfn-lint:
-    config:
-      ignore_checks:
-        - E9101
-      ignore_reasons:
-        - E9101: Not applicable as AWS::RDS::DBInstance has properties called “MasterUsername” and “MasterUserPassword
 Mappings:
   DBFamilyMap:
     '10.17':
