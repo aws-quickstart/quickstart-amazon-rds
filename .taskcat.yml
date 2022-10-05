@@ -1,22 +1,47 @@
 project:
   name: quickstart-amazon-rds-postgres
   owner: quickstart-eng@amazon.com
+  s3_regional_buckets: true
   package_lambda: false
   regions:
+    - af-south-1
+    - ap-east-1
+    - ap-northeast-1
+    - ap-northeast-2
+    - ap-northeast-3
+    - ap-south-1
+    - ap-southeast-1
+    - ap-southeast-2
+    - ap-southeast-3
+    - ca-central-1
+    - eu-central-1
+    - eu-north-1
+    - eu-south-1
+    - eu-west-1
+    - eu-west-2
+    - eu-west-3
+    - me-south-1
+    - sa-east-1
+    - us-east-1
+    - us-east-2
+    - us-west-1
     - us-west-2
+    - us-gov-east-1
+    - us-gov-west-1
+    - cn-north-1
+    - cn-northwest-1
+  parameters:
+    AvailabilityZones: $[taskcat_genaz_2]
+    RemoteAccessCIDR: --override--
+    KeyPairName: --override--
+    QSS3BucketName: $[taskcat_autobucket]
+    QSS3BucketRegion: $[taskcat_current_region]
+  template: templates/postgres-entrypoint-new-vpc.template.yaml
 tests:
   rds-postgresql:
     parameters:
-      AccessCIDR: --overrides--
-      AvailabilityZones: $[taskcat_genaz_2]
-      DBMasterUserPassword: --overrides--
-      EnableEventSubscription: "false"
-      EnableBastion: "false"
-      KeyPairName: --overrides--
-      QSS3BucketName: $[taskcat_autobucket]
-      QSS3BucketRegion: $[taskcat_current_region]
-      QSS3KeyPrefix: quickstart-amazon-rds-postgres/
-      RemoteAccessCIDR: 10.0.0.0/16
+      DBPassword: $[taskcat_genpass_128A]
+      EnableEventSubscription: 'false'
+      EnableBastion: 'false'
     regions:
       - us-west-2
-    template: templates/rds_postgres-main.template.yaml
