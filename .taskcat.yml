@@ -40,7 +40,7 @@ project:
 tests:
   rds-postgresql:
     parameters:
-      DBMasterUserPassword: --overrides--
+      DBPassword: $[taskcat_genpass_128A]
       EnableEventSubscription: 'false'
       EnableBastion: 'false'
     regions:

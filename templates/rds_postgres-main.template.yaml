@@ -278,7 +278,7 @@ Parameters:
     Type: String
     Description: The database admin account password.
     MinLength: 8
-    MaxLength: 64
+    MaxLength: 128
     AllowedPattern: ^[^/'\"@]+$
     ConstraintDescription: >-
       8 to 128 printable ASCII characters. Can''t contain any of the following:
