@@ -30,8 +30,8 @@ Metadata:
       - DBBackupRetentionPeriod
       - DBEngineVersion
       - DBInstanceClass
-      - DBMasterUsername
-      - DBMasterUserPassword
+      - DBUsername
+      - DBPassword
       - DBPort
       - DBAllocatedStorageEncrypted
       - DBExportLogToCloudwatch
@@ -70,10 +70,10 @@ Metadata:
         default: Database backup retention period
       DBInstanceClass:
         default: Database instance class
-      DBMasterUsername:
-        default: Database master username
-      DBMasterUserPassword:
-        default: Database master password
+      DBUsername:
+        default: Username
+      DBPassword:
+        default: Password
       DBPort:
         default: Database port
       DBMultiAZ:
@@ -274,21 +274,24 @@ Parameters:
     Default: db.m6g.large
     Description: The name of the compute and memory capacity class of the database instance.
     Type: String
+  DBPassword:
+    Type: String
+    Description: The database admin account password.
+    MinLength: 8
+    MaxLength: 64
     AllowedPattern: ^[^/'\"@]+$
     ConstraintDescription: >-
       8 to 128 printable ASCII characters. Can''t contain any of the following:
       slash (/), single quote (''), double quote ("), or at sign (@).
-    Description: The database admin account password.
-    MaxLength: 128
-    MinLength: 8
     NoEcho: True
+  DBUsername:
+    Type: String
+    Description: The database admin account username.
+    MinLength: 1
+    MaxLength: 16
     AllowedPattern: ^[a-zA-Z][a-zA-Z0-9]*$
     ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
     Default: pgadmin
-    Description: The database admin account username.
-    MaxLength: 16
-    MinLength: 1
-    Type: String
   DBMonitoringInterval:
     AllowedValues:
       - 0
@@ -418,8 +421,8 @@ Resources:
         DBBackupRetentionPeriod: !Ref DBBackupRetentionPeriod
         DBEngineVersion: !Ref DBEngineVersion
         DBInstanceClass: !Ref DBInstanceClass
-        DBMasterUsername: !Ref DBMasterUsername
-        DBMasterUserPassword: !Ref DBMasterUserPassword
+        DBUsername: !Ref DBUsername
+        DBPassword: !Ref DBPassword
         DBMonitoringInterval: !Ref DBMonitoringInterval
         DBPort: !Ref DBPort
         DBMultiAZ: !Ref DBMultiAZ

@@ -21,8 +21,8 @@ Metadata:
       - DBBackupRetentionPeriod
       - DBEngineVersion
       - DBInstanceClass
-      - DBMasterUsername
-      - DBMasterUserPassword
+      - DBUsername
+      - DBPassword
       - DBPort
       - DBAccessCIDR
       - DBMultiAZ
@@ -56,10 +56,10 @@ Metadata:
         default: Database backup retention period
       DBInstanceClass:
         default: Database instance class
-      DBMasterUsername:
-        default: Database master username
-      DBMasterUserPassword:
-        default: Database master password
+      DBUsername:
+        default: Username
+      DBPassword:
+        default: Password
       DBPort:
         default: Database port
       DBAccessCIDR:
@@ -216,24 +216,24 @@ Parameters:
     Description: Allowed CIDR block for external access (use VPC CIDR).
     Type: String
     Default: 10.0.0.0/16
-  DBMasterUserPassword:
-    AllowedPattern: >-
-      ^(?=^.{8,255}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)((?=.*[^A-Za-z0-9])(?!.*[@/"'])).*$
-    ConstraintDescription: >-
-      Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol
-    Description: "The database admin account password."
-    MaxLength: 64
-    MinLength: 8
-    NoEcho: True
+  DBPassword:
     Type: String
-  DBMasterUsername:
+    Description: The database admin account password.
+    AllowedPattern: ^[^/'\"@]+$
+    ConstraintDescription: >-
+      8 to 128 printable ASCII characters. Can''t contain any of the following:
+      slash (/), single quote (''), double quote ("), or at sign (@).
+    MinLength: 8
+    MaxLength: 64
+    NoEcho: True
+  DBUsername:
+    Type: String
+    Description: The database admin account username.
+    MinLength: 1
+    MaxLength: 16
     AllowedPattern: ^[a-zA-Z][a-zA-Z0-9]*$
     ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
     Default: pgadmin
-    Description: The database admin account username.
-    MaxLength: 16
-    MinLength: 1
-    Type: String
   DBMonitoringInterval:
     AllowedValues:
       - 0
@@ -431,8 +431,8 @@ Resources:
       Engine: postgres
       EngineVersion: !Ref DBEngineVersion
       KmsKeyId: !If [UseDatabaseEncryption, !GetAtt EncryptionKey.Arn, !Ref AWS::NoValue]
-      MasterUserPassword: !Ref DBMasterUserPassword
-      MasterUsername: !Ref DBMasterUsername
+      MasterUserPassword: !Ref DBPassword
+      MasterUsername: !Ref DBUsername
       MaxAllocatedStorage: !Ref DBMaxAllocatedStorage
       MonitoringInterval: !Ref DBMonitoringInterval
       MonitoringRoleArn: !If [UseEnhancedMonitoring, !GetAtt MonitoringIAMRole.Arn, !Ref AWS::NoValue]
