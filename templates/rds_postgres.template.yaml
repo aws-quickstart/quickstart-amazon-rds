@@ -16,6 +16,7 @@ Metadata:
         default: Database configuration
       Parameters:
       - DBName
+      - DBAccessCIDR
       - DBAutoMinorVersionUpgrade
       - DBAllowMajorVersionUpgrade
       - DBBackupRetentionPeriod
@@ -24,10 +25,14 @@ Metadata:
       - DBUsername
       - DBPassword
       - DBPort
-      - DBAccessCIDR
-      - DBMultiAZ
+      - DBAllocatedStorage
+      - DBMaxAllocatedStorage
+      - DBStorageType
+      - DBIops
       - DBAllocatedStorageEncrypted
       - DBExportLogToCloudwatch
+      - DBMultiAZ
+      - DBMonitoringInterval
       - EnableEventSubscription
       - NotificationList
     - Label:
@@ -42,6 +47,12 @@ Metadata:
     ParameterLabels:
       DBAllocatedStorage:
         default: Amount of storage (in gigabytes)
+      DBMaxAllocatedStorage:
+        default: Max allocated storage
+      DBStorageType:
+        default: Storage type
+      DBIops:
+        default: IOPS
       DBName:
         default: Database name
       DBEngineVersion:
@@ -52,6 +63,8 @@ Metadata:
         default: Export Database Log to Cloudwatch
       DBAutoMinorVersionUpgrade:
         default: Database auto minor version upgrade
+      DBAllowMajorVersionUpgrade:
+        default: Database allow major version upgrade
       DBBackupRetentionPeriod:
         default: Database backup retention period
       DBInstanceClass:
@@ -66,6 +79,8 @@ Metadata:
         default: Database connection CIDR
       DBMultiAZ:
         default: Multi-AZ deployment
+      DBMonitoringInterval:
+        default: Monitoring interval
       Subnet1ID:
         default: Private subnet 1 ID
       Subnet2ID:
