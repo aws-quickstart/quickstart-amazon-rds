@@ -230,8 +230,8 @@ Parameters:
     AllowedValues:
       - 'true'
       - 'false'
-  DBAutoMinorVersionUpgrade: 
-    AllowedValues: 
+  DBAutoMinorVersionUpgrade:
+    AllowedValues:
       - 'true'
       - 'false'
     Default: 'false'
@@ -244,7 +244,7 @@ Parameters:
     Default: 'false'
     Description: Select true to set up major version upgrade.
     Type: String
-  DBBackupRetentionPeriod: 
+  DBBackupRetentionPeriod:
     Default: 35
     Description: The number of days for which automatic database snapshots are retained.
     Type: String
@@ -307,22 +307,22 @@ Parameters:
     ConstraintDescription: Must be in the range [1115-65535].
     MinValue: 1150
     MaxValue: 65535
-  DBMultiAZ: 
-    AllowedValues: 
+  DBMultiAZ:
+    AllowedValues:
       - 'true'
       - 'false'
     Default: 'true'
     Description: Specifies if the database instance is a multiple Availability Zone deployment.
     Type: String
-  DBName: 
+  DBName:
     AllowedPattern: ^[a-zA-Z][a-zA-Z0-9]*$
     Default: RDSPostgresDB
     Description: Name of the Amazon RDS (PostgreSQL) database.
     MaxLength: 64
     MinLength: 5
     Type: String
-  EnableEventSubscription: 
-    AllowedValues: 
+  EnableEventSubscription:
+    AllowedValues:
       - 'true'
       - 'false'
     Default: 'true'
