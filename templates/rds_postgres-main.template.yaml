@@ -499,6 +499,7 @@ Resources:
         Confidentiality: !Ref Confidentiality
         Compliance: !Ref Compliance
   BastionStack:
+  # TODO: Move this into the existing VPC stack.
     Type: AWS::CloudFormation::Stack
     Condition: EnableBastionAccess
     Properties:
