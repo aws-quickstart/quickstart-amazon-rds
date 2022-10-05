@@ -485,26 +485,19 @@ Resources:
       StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref AWS::NoValue]
       MultiAZ: !Ref DBMultiAZ
       Tags:
-        -
-          Key: Name
+        - Key: Name
           Value: !Sub RDSDB-${AWS::StackName}
-        -
-          Key: EnvironmentStage
+        - Key: EnvironmentStage
           Value: !Ref EnvironmentStage
-        -
-          Key: Application
+        - Key: Application
           Value: !Ref Application
-        -
-          Key: ApplicationVersion
+        - Key: ApplicationVersion
           Value: !Ref ApplicationVersion
-        -
-          Key: ProjectCostCenter
+        - Key: ProjectCostCenter
           Value: !Ref ProjectCostCenter
-        -
-          Key: Confidentiality
+        - Key: Confidentiality
           Value: !Ref Confidentiality
-        -
-          Key: Compliance
+        - Key: Compliance
           Value: !Ref Compliance
       VPCSecurityGroups:
         - !If [CreateSecurityGroup, !Ref RDSSecurityGroup, !Ref CustomDBSecurityGroup]
@@ -521,14 +514,12 @@ Resources:
     Properties:
       GroupDescription: Allow access to database port
       SecurityGroupEgress:
-        -
-          CidrIp: 0.0.0.0/0
+        - CidrIp: 0.0.0.0/0
           FromPort: -1
           IpProtocol: -1
           ToPort: -1
       SecurityGroupIngress:
-        -
-          CidrIp: !Ref DBAccessCIDR
+        - CidrIp: !Ref DBAccessCIDR
           FromPort: !Ref DBPort
           IpProtocol: tcp
           ToPort: !Ref DBPort
