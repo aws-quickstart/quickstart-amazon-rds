@@ -5,34 +5,17 @@
 NOTE: This optional test procedure assumes that you have a *bastion host* with *TCPForwarding* enabled.
 
 . Download the latest version of https://www.pgadmin.org/download/[{database-client}] and install it on your workstation from where you will be connecting to the database cluster.
-. From the AWS CloudFormation console, on the *Outputs* tab for `BastionStack`, note the value for `EIP1`, as shown in <<output1>>.
+. From the AWS CloudFormation console, on the *Outputs* tab for `BastionStack`, note the value for `EIP1`, as shown in <<outputs1>>.
 +
-[#output1]
+[#outputs1]
 .IP address for Linux bastion host
 image::../docs/deployment_guide/images/outputs1.png[AWS CloudFormation stack BastionStack Outputs tab]
 +
-. From the AWS CloudFormation console, on the *Outputs* tab for `RDSStack`, note the values of `DBName`, `DBUsername`, `RDSEndpointAddress`, and `RDSEndpointPort`, as
-shown in <<output2>>.
+. From the AWS CloudFormation console, on the *Outputs* tab for `RDSStack`, note the values of `DBName`, `DBUsername`, `RDSEndpointAddress`, and `RDSEndpointPort` as shown in <<outputs2>>.
 +
-[#output2]
+[#outputs2]
 .{service-short-name} stack outputs
 image::../docs/deployment_guide/images/outputs2.png[AWS CloudFormation stack RDSStack Outputs tab]
-+
-. Create an SSH tunnel to the bastion host using the following command.
-+
-[source,bash]
-----
-ssh -N -L <RDSEndpointPort>:<RDSEndPointAddress>:<RDSEndpointPort> ec2-user@EIP1 -i <KeyPairName>
-----
-+
-NOTE: You will need to enter the path for the Amazon Elastic Cloud Compute (Amazon EC2) key pair that you specified for *Key name* (`KeyPairName`) parameter while creating the CloudFormation stack. When you're finished testing, terminate the SSH tunnel by pressing Ctrl+C.
-+
-With the values added, the command will look like the following.
-+
-[source,bash]
-----
-ssh -N -L 5432:<INSERT URL>:5432 ec2-user@35.166.99.4 -i keypair.pem
-----
 +
 . Launch *{database-client}* on your workstation, enter a new password, and choose *OK* to continue.
 +
@@ -40,11 +23,11 @@ ssh -N -L 5432:<INSERT URL>:5432 ec2-user@35.166.99.4 -i keypair.pem
 .Set the password for {database-client}
 image::../docs/deployment_guide/images/pgadmin1.png[{database-client}: set password]
 +
-In *{database-client}*, create a new server connection by choosing *Servers*, choosing the context (right&#8209;click) menu, choosing *Create*, and choosing *Server*.
+In *{database-client}*, create a new server connection by choosing *Servers*, choosing the context (right&#8209;click) menu, then *Register*, and then *Server...*.
 +
 [#pgadmin2]
-.Create a new server connection in {database-client}
-image::../docs/deployment_guide/images/pgadmin2.png[{database-client}: create server connection]
+.Register a new server connection in {database-client}
+image::../docs/deployment_guide/images/pgadmin2.png[{database-client}: register server connection]
 +
 . To connect to your database, choose the *General* tab, and provide a descriptive name.
 +
@@ -52,24 +35,34 @@ image::../docs/deployment_guide/images/pgadmin2.png[{database-client}: create se
 .General settings for {database-client} server connection setup
 image::../docs/deployment_guide/images/pgadmin3.png[{database-client}: server general settings]
 +
-. Choose the *Connection* tab, and provide the following values.
+. Choose the *Connection* tab and provide the following values as shown in <<pgadmin4>>:
 +
-TIP: Most of the required values can be found on the *Outputs* tab of the `RDSStack` as shown in <<output2>>.
+TIP: Most of the required values can be found on the *Outputs* tab of the `RDSStack` as shown in <<outputs2>>.
 +
 .. In the *Host name/address* field, enter `<RDSEndpointAddress>`.
 .. In the *Maintenance database* field, enter the `<DBName>`.
 .. In the *Username* field, enter the `<DBUsername>`.
 .. In the *Password* field, enter the `<DBPassword>` you entered during stack creation.
-. Choose *Save* to store the connection information and to connect.
 +
 [#pgadmin4]
 .Connection settings for the {partner-product-short-name} database cluster
 image::../docs/deployment_guide/images/pgadmin4.png[{database-client}: server connection settings]
 +
-Upon successful connection you will see a {database-client} dashboard, as shown in <<pgadmin5>>.
+. Choose the *SSH Tunnel* tab and provide the following values as shown in <<pgadmin5>>:
+.. Enable the *Use SSH tunneling* toggle switch.
+.. In the *Tunnel host* field, enter `<EIP1>` from the *Outputs* tab of the `BastionStack` as shown in <<outputs1>>.
+.. In the *Username* field, enter `ec2-user`.
+.. In the *Authentication* field, select `Identity file`.
+.. In the *Identity file* field, select your Amazon EC2 key pair private key file, such as `keypair.pem`.
 +
 [#pgadmin5]
-.Confirmation that the {partner-product-short-name} database cluster is accepting connections
-image::../docs/deployment_guide/images/pgadmin5.png[{database-client}: dashboard]
+.SSH tunnel settings for the {partner-product-short-name} database cluster
+image::../docs/deployment_guide/images/pgadmin5.png[{database-client}: SSH tunnel settings]
 +
-. Terminate the SSH tunnel by pressing Ctrl+C.
+. Choose *Save* to store the connection information and to connect to your new {partner-product-short-name} instance.
++
+Upon successful connection, you will see a {database-client} dashboard as shown in <<pgadmin6>>.
++
+[#pgadmin6]
+.Confirmation that the {partner-product-short-name} database cluster is accepting connections
+image::../docs/deployment_guide/images/pgadmin6.png[{database-client}: dashboard]
