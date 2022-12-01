@@ -7,7 +7,7 @@
 :partner-product-short-name: {service-short-name}: {database-engine}
 :database-client: PgAdmin 4
 // :partner-company-name: Example Company Name, Ltd.
-:doc-month: October
+:doc-month: December
 :doc-year: 2022
 // :partner-contributors: John Smith, {partner-company-name}
 // :other-contributors: Akua Mansa, Trek10
