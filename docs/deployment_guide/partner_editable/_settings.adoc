@@ -4,14 +4,14 @@
 :service-name: Amazon Relational Database Service
 :service-short-name: Amazon RDS
 :partner-product-name: {service-name} for {database-engine}
-:partner-product-short-name: {service-short-name}: {database-engine}
+:partner-product-short-name: {service-short-name} for {database-engine}
 :database-client: PgAdmin 4
 // :partner-company-name: Example Company Name, Ltd.
 :doc-month: December
 :doc-year: 2022
 // :partner-contributors: John Smith, {partner-company-name}
 // :other-contributors: Akua Mansa, Trek10
-:aws-contributors: Sudhir Gupta, AWS Databases & Analytics team and Battulga Purevragchaa, AWS ISV Workload Migration Program
+:aws-contributors: Sudhir Gupta, AWS Databases & Analytics team and Battulga Purevragchaa, AWS ISV Workload Migration program
 :aws-ia-contributors: Troy Lindsay and Andrew Gargan, AWS Integration & Automation team
 :deployment_time: 30 minutes
 :default_deployment_region: us-east-1
