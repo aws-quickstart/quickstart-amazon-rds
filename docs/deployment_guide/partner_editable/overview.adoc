@@ -1,6 +1,6 @@
-This guide covers the information you need to deploy the {partner-product-name} ({partner-product-short-name}) in the AWS Cloud.
+This guide covers the information you need to deploy Amazon Relational Database Service (Amazon RDS) for PostgreSQL in the AWS Cloud.
 
-{partner-product-short-name} is a collection of managed services that makes it simple to set up, operate, and scale databases in the cloud. {database-engine} combines the speed and reliability of high&#8209;end commercial databases with the simplicity and cost&#8209;effectiveness of open&#8209;source databases. The code, tools, and applications you use today with your existing {database-engine} databases can be used with {partner-product-short-name}. If you are not already familiar with {service-short-name}, see the https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html[{service-name} User Guide].
+{partner-product-short-name} is a collection of managed services that helps you set up, operate, and scale databases in the cloud. {database-engine} combines the speed and reliability of high-end commercial databases with the simplicity and cost-effectiveness of open-source databases. You can use {partner-product-short-name} with the the code, tools, and applications you use today with your existing {database-engine} databases. If you aren't familiar with {service-short-name}, refer to https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html[What is Amazon Relational Database Service (Amazon RDS)?^]
 
 // For advanced information about the product, troubleshooting, or additional functionality, refer to the https://{partner-solution-github-org}.github.io/{partner-solution-project-name}/operational/index.html[Operational Guide^].
 
