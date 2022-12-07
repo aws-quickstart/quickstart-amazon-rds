@@ -18,7 +18,7 @@ As shown in <<architecture1>>, this Partner Solution sets up the following:
 * In the private subnets:
 ** An {partner-product-short-name} cluster that includes a write replica in one Availability Zone and a read replica in the other.
 * Amazon CloudWatch metrics for monitoring the database instance and CloudWatch logs for storing database logs.
-* An Amazon Simple Notification Service (Amazon SNS) topic for sending CloudWatch alarm and RDS event notifications.
+* An Amazon Simple Notification Service (Amazon SNS) topic for sending CloudWatch alarm and Amazon RDS event notifications.
 * AWS Key Management Service (AWS KMS) for encrypting the data stored in the database instance.
 
 [.small]#* The template that deploys this Partner Solution into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#
