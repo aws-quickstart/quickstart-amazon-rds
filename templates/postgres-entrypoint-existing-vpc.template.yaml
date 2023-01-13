@@ -12,7 +12,16 @@ Metadata:
           - VPCID
           - Subnet1ID
           - Subnet2ID
+          - PublicSubnet1ID
+          - PublicSubnet2ID
           - CustomDBSecurityGroup
+      - Label:
+          default: Linux bastion configuration
+        Parameters:
+          - EnableBastion
+          - KeyPairName
+          - RemoteAccessCIDR
+          - EnableTCPForwarding
       - Label:
           default: Database configuration
         Parameters:
@@ -45,6 +54,12 @@ Metadata:
           - ProjectCostCenter
           - Confidentiality
           - Compliance
+      - Label:
+          default: AWS Partner Solution configuration
+        Parameters:
+          - QSS3BucketName
+          - QSS3BucketRegion
+          - QSS3KeyPrefix
     ParameterLabels:
       DBAllocatedStorage:
         default: Amount of storage (in gigabytes)
@@ -82,10 +97,24 @@ Metadata:
         default: Multi-AZ deployment
       DBMonitoringInterval:
         default: Monitoring interval
+      EnableBastion:
+        default: Create bastion stack
+      EnableTCPForwarding:
+        default: Enable TCP forwarding
       Subnet1ID:
         default: Private subnet 1 ID
       Subnet2ID:
         default: Private subnet 2 ID
+      PublicSubnet1ID:
+        default: Public subnet 1 ID
+      PublicSubnet2ID:
+        default: Public subnet 2 ID
+      QSS3BucketName:
+        default: Partner Solution S3 bucket name
+      QSS3BucketRegion:
+        default: Partner Solution S3 bucket Region
+      QSS3KeyPrefix:
+        default: Partner Solution S3 key prefix
       VPCID:
         default: VPC ID
       CustomDBSecurityGroup:
@@ -106,6 +135,10 @@ Metadata:
        default: Confidentiality classifier
       ProjectCostCenter:
        default: Project cost center
+      KeyPairName:
+        default: Key name
+      RemoteAccessCIDR:
+        default: Permitted IP range
 Mappings:
   DBFamilyMap:
     '10.17':
@@ -157,6 +190,8 @@ Mappings:
     '14.4':
       family: postgres14
 Conditions:
+  EnableBastionAccess: !Equals [!Ref EnableBastion, 'true']
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, aws-quickstart]
   EventSubscription: !Equals [!Ref EnableEventSubscription, 'true']
   DoCreateDatabase: !Not [!Equals [!Ref DBName, '']]
   DBProvisionedIops: !Equals [!Ref DBStorageType, io1]
@@ -165,6 +200,19 @@ Conditions:
   EnableDBLogExport: !Equals [!Ref DBExportLogToCloudwatch, 'true']
   CreateSecurityGroup: !Equals [!Ref CustomDBSecurityGroup, '']
 Parameters:
+  # NOTE: Don't change the type of KeyPairName parameter back to
+  # AWS::EC2::KeyPair::KeyName. String type is intentional as it enables
+  # default (empty) value. By using defaults, we promote
+  # AWS Systems Manager Session Manager service, which is a recommended way
+  # to connect to EC2 instances.
+  KeyPairName:
+    Type: String
+    Description: >-
+      Name of an existing key pair, which allows you to securely connect to
+      your instance after it launches. Leave empty to proceed without a key
+      pair. You would need to use AWS Systems Manager Session Manager to
+      connect to the provisioned EC2 instances.
+    Default: ''
   DBAllocatedStorage:
     Type: Number
     Description: Amount of storage (in gigabytes).
@@ -192,6 +240,11 @@ Parameters:
     Description: Choose 'true' to export database logs to Cloudwatch.
     AllowedValues: ['true', 'false']
     Default: 'true'
+  EnableTCPForwarding:
+    Type: String
+    Description: Choose 'true' to enable TCP forwarding.
+    AllowedValues: ['true', 'false']
+    Default: 'false'
   DBAutoMinorVersionUpgrade:
     Type: String
     Description: Choose 'true' to set up automatic minor version upgrades.
@@ -283,7 +336,7 @@ Parameters:
     Default: 60
   DBPort:
     Type: Number
-    Description: The port used by the instance to listen for connections. 
+    Description: The port used by the instance to listen for connections.
     MinValue: 1150
     MaxValue: 65535
     ConstraintDescription: Must be in the range [1115-65535].
@@ -311,7 +364,8 @@ Parameters:
   CustomDBSecurityGroup:
     Type: String
     Description: >-
-      ID of the security group (example: sg-0234se). If left empty, a security group is created. 
+      ID of the security group (example: sg-0234se). If left empty, a security
+      group is created.
     Default: ''
   Subnet1ID:
     Type: AWS::EC2::Subnet::Id
@@ -319,12 +373,74 @@ Parameters:
   Subnet2ID:
     Type: AWS::EC2::Subnet::Id
     Description: ID of the private subnet in Availability Zone 2.
+  PublicSubnet1ID:
+    Type: AWS::EC2::Subnet::Id
+    Description: >-
+      ID of the public subnet 1 that you want to provision the bastion host
+      into (for example, subnet-a0246dcd). If RemoteAccessCIDR is set to
+      'disabled-onlyssmaccess', enter the ID of a private subnet instead.
+  PublicSubnet2ID:
+    Type: AWS::EC2::Subnet::Id
+    Description: >-
+      ID of the public subnet 2 that you want to provision the bastion host
+      into (for example, subnet-e3246d8e). If RemoteAccessCIDR is set to
+      'disabled-onlyssmaccess', enter the ID of a private subnet instead.
+  RemoteAccessCIDR:
+    Type: String
+    Description: Allowed CIDR block for external SSH access to the bastions.
+    AllowedPattern: ^disabled-onlyssmaccess$|^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    ConstraintDescription: CIDR block parameter must be disabled-onlyssmaccess or in the format "x.x.x.x/x".
+    Default: disabled-onlyssmaccess
   VPCID:
     Type: AWS::EC2::VPC::Id
     Description: >-
       ID of the VPC into which Amazon RDS (PostgreSQL) is deployed
       (example: vpc-0343606e).
     Default: ''
+  QSS3BucketName:
+    Type: String
+    Description: >-
+      Name of the S3 bucket for your copy of the Quick Start assets.
+      Keep the default name unless you are customizing the template.
+      Changing the name updates code references to point to a new Quick
+      Start location. This name can include numbers, lowercase letters,
+      and hyphens, but do not start or end with a hyphen (-).
+      See https://aws-quickstart.github.io/option1.html.
+    MinLength: 3
+    MaxLength: 63
+    AllowedPattern: ^[0-9a-z]+([0-9a-z-]*[0-9a-z])*$
+    ConstraintDescription:
+      The Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a
+      hyphen (-).
+    Default: aws-quickstart
+  QSS3BucketRegion:
+    Type: String
+    Description: >-
+      AWS Region where the S3 bucket (QSS3BucketName) is hosted. Keep
+      the default Region unless you are customizing the template. Changing the Region
+      updates code references to point to a new location. When using your own bucket,
+      specify the Region.
+    Default: us-east-1
+  QSS3KeyPrefix:
+    Type: String
+    Description: >-
+      S3 key prefix that is used to simulate a folder for your copy of the
+      deployment assets. Keep the default prefix unless you are customizing
+      the template. Changing the prefix updates code references to point to
+      a new location.
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: >-
+      The S3 key prefix can include numbers, lowercase letters, uppercase letters,
+      hyphens (-), underscores (_), periods (.), asterisks (*), single quotes ('),
+      open parenthesis ((), close parenthesis ()), and forward slashes (/). End the
+      prefix with a forward slash.
+    Default: quickstart-amazon-rds-postgres/
+  EnableBastion:
+    Type: String
+    Description: If true, creates a bastion stack.
+    AllowedValues: ['true', 'false']
+    Default: 'true'
   EnableEventSubscription:
     Type: String
     Description: >-
@@ -387,6 +503,25 @@ Parameters:
       - ''
     Default: ''
 Resources:
+  BastionStack:
+    Type: AWS::CloudFormation::Stack
+    Condition: EnableBastionAccess
+    Properties:
+      TemplateURL:
+        !Sub
+          - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion-entrypoint-existing-vpc.template.yaml
+          - S3Region: !If [UsingDefaultBucket, !Ref AWS::Region, !Ref QSS3BucketRegion]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        KeyPairName: !Ref KeyPairName
+        PublicSubnet1ID: !Ref PublicSubnet1ID
+        PublicSubnet2ID: !Ref PublicSubnet2ID
+        EnableTCPForwarding: !Ref EnableTCPForwarding
+        RemoteAccessCIDR: !Ref RemoteAccessCIDR
+        VPCID: !Ref VPCID
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3BucketRegion: !Ref QSS3BucketRegion
+        QSS3KeyPrefix: !Sub ${QSS3KeyPrefix}submodules/quickstart-linux-bastion/
   MonitoringIAMRole:
     Type: AWS::IAM::Role
     Condition: UseEnhancedMonitoring

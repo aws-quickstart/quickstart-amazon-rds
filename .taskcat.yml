@@ -36,8 +36,6 @@ project:
     - cn-northwest-1
   parameters:
     AvailabilityZones: $[taskcat_genaz_2]
-    RemoteAccessCIDR: --override--
-    KeyPairName: --override--
     QSS3BucketName: $[taskcat_autobucket]
     QSS3BucketRegion: $[taskcat_current_region]
   template: templates/postgres-entrypoint-new-vpc.template.yaml
@@ -46,6 +44,5 @@ tests:
     parameters:
       DBPassword: $[taskcat_genpass_128A]
       EnableEventSubscription: 'false'
-      EnableBastion: 'false'
     regions:
       - us-west-2
