@@ -139,76 +139,6 @@ Metadata:
         default: Key name
       RemoteAccessCIDR:
         default: Permitted IP range
-Mappings:
-  DBFamilyMap:
-    '10.17':
-      family: postgres10
-    '10.18':
-      family: postgres10
-    '10.19':
-      family: postgres10
-    '10.20':
-      family: postgres10
-    '10.21':
-      family: postgres10
-    '10.22':
-      family: postgres10
-    '11.12':
-      family: postgres11
-    '11.13':
-      family: postgres11
-    '11.14':
-      family: postgres11
-    '11.15':
-      family: postgres11
-    '11.16':
-      family: postgres11
-    '11.17':
-      family: postgres11
-    '12.7':
-      family: postgres12
-    '12.8':
-      family: postgres12
-    '12.9':
-      family: postgres12
-    '12.10':
-      family: postgres12
-    '12.11':
-      family: postgres12
-    '12.12':
-      family: postgres12
-    '13.3':
-      family: postgres13
-    '13.4':
-      family: postgres13
-    '13.5':
-      family: postgres13
-    '13.6':
-      family: postgres13
-    '13.7':
-      family: postgres13
-    '13.8':
-      family: postgres13
-    '14.1':
-      family: postgres14
-    '14.2':
-      family: postgres14
-    '14.3':
-      family: postgres14
-    '14.4':
-      family: postgres14
-    '14.5':
-      family: postgres14
-Conditions:
-  EnableBastionAccess: !Equals [!Ref EnableBastion, 'true']
-  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, aws-quickstart]
-  EventSubscription: !Equals [!Ref EnableEventSubscription, 'true']
-  DoCreateDatabase: !Not [!Equals [!Ref DBName, '']]
-  DBProvisionedIops: !Equals [!Ref DBStorageType, io1]
-  UseEnhancedMonitoring: !Not [!Equals [!Ref DBMonitoringInterval, 0]]
-  UseDatabaseEncryption: !Equals [!Ref DBAllocatedStorageEncrypted, 'true']
-  EnableDBLogExport: !Equals [!Ref DBExportLogToCloudwatch, 'true']
-  CreateSecurityGroup: !Equals [!Ref CustomDBSecurityGroup, '']
 Parameters:
   # NOTE: Don't change the type of KeyPairName parameter back to
   # AWS::EC2::KeyPair::KeyName. String type is intentional as it enables
@@ -517,6 +447,76 @@ Parameters:
       - other
       - ''
     Default: ''
+Mappings:
+  DBFamilyMap:
+    '10.17':
+      family: postgres10
+    '10.18':
+      family: postgres10
+    '10.19':
+      family: postgres10
+    '10.20':
+      family: postgres10
+    '10.21':
+      family: postgres10
+    '10.22':
+      family: postgres10
+    '11.12':
+      family: postgres11
+    '11.13':
+      family: postgres11
+    '11.14':
+      family: postgres11
+    '11.15':
+      family: postgres11
+    '11.16':
+      family: postgres11
+    '11.17':
+      family: postgres11
+    '12.7':
+      family: postgres12
+    '12.8':
+      family: postgres12
+    '12.9':
+      family: postgres12
+    '12.10':
+      family: postgres12
+    '12.11':
+      family: postgres12
+    '12.12':
+      family: postgres12
+    '13.3':
+      family: postgres13
+    '13.4':
+      family: postgres13
+    '13.5':
+      family: postgres13
+    '13.6':
+      family: postgres13
+    '13.7':
+      family: postgres13
+    '13.8':
+      family: postgres13
+    '14.1':
+      family: postgres14
+    '14.2':
+      family: postgres14
+    '14.3':
+      family: postgres14
+    '14.4':
+      family: postgres14
+    '14.5':
+      family: postgres14
+Conditions:
+  EnableBastionAccess: !Equals [!Ref EnableBastion, 'true']
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, aws-quickstart]
+  EventSubscription: !Equals [!Ref EnableEventSubscription, 'true']
+  DoCreateDatabase: !Not [!Equals [!Ref DBName, '']]
+  DBProvisionedIops: !Equals [!Ref DBStorageType, io1]
+  UseEnhancedMonitoring: !Not [!Equals [!Ref DBMonitoringInterval, 0]]
+  UseDatabaseEncryption: !Equals [!Ref DBAllocatedStorageEncrypted, 'true']
+  EnableDBLogExport: !Equals [!Ref DBExportLogToCloudwatch, 'true']
+  CreateSecurityGroup: !Equals [!Ref CustomDBSecurityGroup, '']
 Resources:
   BastionStack:
     Type: AWS::CloudFormation::Stack
