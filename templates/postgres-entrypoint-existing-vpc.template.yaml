@@ -151,6 +151,8 @@ Mappings:
       family: postgres10
     '10.21':
       family: postgres10
+    '10.22':
+      family: postgres10
     '11.12':
       family: postgres11
     '11.13':
@@ -160,6 +162,8 @@ Mappings:
     '11.15':
       family: postgres11
     '11.16':
+      family: postgres11
+    '11.17':
       family: postgres11
     '12.7':
       family: postgres12
@@ -171,6 +175,8 @@ Mappings:
       family: postgres12
     '12.11':
       family: postgres12
+    '12.12':
+      family: postgres12
     '13.3':
       family: postgres13
     '13.4':
@@ -181,6 +187,8 @@ Mappings:
       family: postgres13
     '13.7':
       family: postgres13
+    '13.8':
+      family: postgres13
     '14.1':
       family: postgres14
     '14.2':
@@ -188,6 +196,8 @@ Mappings:
     '14.3':
       family: postgres14
     '14.4':
+      family: postgres14
+    '14.5':
       family: postgres14
 Conditions:
   EnableBastionAccess: !Equals [!Ref EnableBastion, 'true']
@@ -274,26 +284,31 @@ Parameters:
       - 10.19
       - 10.20
       - 10.21
+      - 10.22
       - 11.12
       - 11.13
       - 11.14
       - 11.15
       - 11.16
+      - 11.17
       - 12.7
       - 12.8
       - 12.9
       - 12.10
       - 12.11
+      - 12.12
       - 13.3
       - 13.4
       - 13.5
       - 13.6
       - 13.7
+      - 13.8
       - 14.1
       - 14.2
       - 14.3
       - 14.4
-    Default: 14.4
+      - 14.5
+    Default: 14.5
   DBInstanceClass:
     Type: String
     Description: >-
