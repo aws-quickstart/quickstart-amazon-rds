@@ -1,4 +1,4 @@
-# Amazon RDS PostgreSQL-AWS Solution
+# Amazon RDS QuickStarts
 
 For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://fwd.aws/634Gv?).
 
