@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: "Amazon RDS SQLServer,Do Not Remove Apache License Version 2.0 (qs-xxxxxxx) Jun,06,2023"
+Description: "Amazon RDS SQLServer,Do Not Remove Apache License Version 2.0 (qs-1u8od96fj) Jun,06,2023"
 Metadata:
   LICENSE: Apache License Version 2.0
   cfn-lint:

@@ -1,4 +1,4 @@
-Description: "AWS VPC + Linux bastion host + RDS SQLServer, Do Not Remove Apache License Version 2.0 (qs-xxxxxxxxxxxxx) Jun,06,2023"
+Description: "AWS VPC + Linux bastion host + RDS SQLServer, Do Not Remove Apache License Version 2.0 (qs-1u8od96cs) Jun,06,2023"
 Metadata:
   LICENSE: Apache License Version 2.0
   cfn-lint:
@@ -564,12 +564,13 @@ Parameters:
       The maximum ratio of provisioned storage throughput (in MiBps) to IOPS is 0.25.
       For details, refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html
     Type: String
-  
+
+
 Conditions:
   EnableBastionAccess: !Equals
     - !Ref EnableBastion
     - "true"
-  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']  
 
 Rules:
   IOPSForIO1:
