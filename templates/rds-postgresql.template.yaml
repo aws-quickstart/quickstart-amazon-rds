@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: "Amazon RDS PostgreSQL, Do Not Remove Apache License Version 2.0 (qs-xxxxxxxx) May,31,2023"
+Description: "Amazon RDS PostgreSQL, Do Not Remove Apache License Version 2.0 (qs-1u8fagclk) May,31,2023"
 Metadata:
   LICENSE: Apache License Version 2.0
   cfn-lint:
