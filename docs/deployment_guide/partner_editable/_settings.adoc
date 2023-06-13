@@ -1,18 +1,18 @@
-:partner-solution-project-name: quickstart-amazon-rds-postgres
+:partner-solution-project-name: quickstart-amazon-rds
 :partner-solution-github-org: aws-quickstart
-:database-engine: PostgreSQL
-:service-name: Amazon Relational Database Service
-:service-short-name: Amazon RDS
-:partner-product-name: {service-name} for {database-engine}
-:partner-product-short-name: {service-short-name} for {database-engine}
-:database-client: PgAdmin 4
+//:database-engine: PostgreSQL
+//:service-name: Amazon Relational Database Service
+//:service-short-name: Amazon RDS
+:partner-product-name: Amazon Relational Database Service
+:partner-product-short-name: Amazon RDS
+//:database-client: PgAdmin 4
 // :partner-company-name: Example Company Name, Ltd.
-:doc-month: December
-:doc-year: 2022
+:doc-month: June
+:doc-year: 2023
 // :partner-contributors: John Smith, {partner-company-name}
 // :other-contributors: Akua Mansa, Trek10
 :aws-contributors: Sudhir Gupta, AWS Databases & Analytics team, and Battulga Purevragchaa, AWS ISV Workload Migration program
-:aws-ia-contributors: Troy Lindsay and Andrew Gargan, AWS Integration & Automation team
+:aws-ia-contributors: Troy Lindsay, Andrew Gargan, Vinod Shukla, and Dave May, AWS Integration & Automation team
 :deployment_time: 30 minutes
 :default_deployment_region: us-east-1
 // :private_repo:
