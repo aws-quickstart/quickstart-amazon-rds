@@ -4,4 +4,4 @@
 Do these steps:
 
 . Identify an email distribution list to use for notifications.
-. Identify which {database-engine} versions that your application(s) support, and select the optimal choice.
+. Identify which database engine versions your application(s) support, and select the optimal choice.

@@ -1,6 +1,6 @@
-This guide covers the information you need to deploy Amazon Relational Database Service (Amazon RDS) for PostgreSQL in the AWS Cloud.
+This guide covers the information you need to deploy Amazon Relational Database Service (Amazon RDS) in the AWS Cloud.
 
-The solution deploys a {partner-product-short-name} cluster in a private subnet with an Amazon RDS read replica in one Availability Zone and a write replica in another zone. Native replication mechanisms available with {database-engine} keep the read replica in sync with the source database. The deployment also includes access to Amazon CloudWatch metrics and logs, event notifications, and data encryption. 
+The solution deploys a {partner-product-short-name} cluster in a private subnet with an Amazon RDS read replica in one Availability Zone and a write replica in another zone. Native replication mechanisms available with the database engine keep the read replica in sync with the source database. The deployment also includes access to Amazon CloudWatch metrics and logs, event notifications, and data encryption. 
 
 // {partner-product-short-name} is a collection of managed services that helps you set up, operate, and scale databases in the cloud. {database-engine} combines the speed and reliability of high-end commercial databases with the simplicity and cost-effectiveness of open-source databases. You can use {partner-product-short-name} with the the code, tools, and applications you use today with your existing {database-engine} databases. If you aren't familiar with {service-short-name}, refer to https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html[What is Amazon Relational Database Service (Amazon RDS)?^]
 
