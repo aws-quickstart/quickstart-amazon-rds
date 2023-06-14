@@ -2,7 +2,7 @@
 
 == Postdeployment steps
 
-=== For PostgreSQL
+=== PostgreSQL test
 
 NOTE: This optional test procedure assumes that you have a bastion host with TCP forwarding enabled.
 
