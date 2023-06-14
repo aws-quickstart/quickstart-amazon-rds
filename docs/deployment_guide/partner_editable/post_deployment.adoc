@@ -2,7 +2,7 @@
 
 == Postdeployment steps
 
-NOTE: This optional test procedure assumes that you have a bastion host with TCP forwarding enabled.
+NOTE: The following optional test procedure assumes that you have a bastion host with TCP forwarding enabled.
 
 . Download the latest version of https://www.pgadmin.org/download/[the database client] and install it on the workstation that will connect to the database cluster.
 . From the AWS CloudFormation console, on the *Outputs* tab for `BastionStack`, note the value for `EIP1`, as shown in <<outputs1>>.
