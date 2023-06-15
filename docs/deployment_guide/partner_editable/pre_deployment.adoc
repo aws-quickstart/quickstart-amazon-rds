@@ -1,7 +1,6 @@
 //Include any predeployment steps here, such as signing up for a Marketplace AMI or making any changes to a partner account. If there are no predeployment steps, leave this file empty.
 
 == Predeployment steps
-Do these steps:
 
 . Identify an email distribution list to use for notifications.
-. Identify which database engine versions your application(s) support, and select the optimal choice.
+. Identify which database engine versions your applications support. Select the best choice for your applications during deployment.
