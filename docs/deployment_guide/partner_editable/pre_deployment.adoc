@@ -3,4 +3,4 @@
 == Predeployment steps
 
 . Identify an email distribution list to use for notifications.
-. Identify which database engine versions your applications support. Select the best choice for your applications during deployment.
+. Identify the database engine versions that your applications support and select the optimal choice to deploy.
