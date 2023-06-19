@@ -3,7 +3,7 @@
 //:database-engine: PostgreSQL
 //:service-name: Amazon Relational Database Service
 //:service-short-name: Amazon RDS
-:partner-product-name: Amazon Relational Database Service
+:partner-product-name: Amazon RDS
 :partner-product-short-name: Amazon RDS
 //:database-client: PgAdmin 4
 // :partner-company-name: Example Company Name, Ltd.
