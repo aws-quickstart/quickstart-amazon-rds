@@ -34,15 +34,40 @@ project:
     - us-gov-west-1
     - cn-north-1
     - cn-northwest-1
-  parameters:
-    AvailabilityZones: $[taskcat_genaz_2]
-    QSS3BucketName: $[taskcat_autobucket]
-    QSS3BucketRegion: $[taskcat_current_region]
-  template: templates/postgres-entrypoint-new-vpc.template.yaml
 tests:
-  rds-postgresql:
+  rds-mysql:
     parameters:
-      DBPassword: $[taskcat_genpass_128A]
-      EnableEventSubscription: 'false'
+      AvailabilityZones: $[taskcat_genaz_3]
+      DBMasterUserPassword: $[taskcat_genpass_128A]
+      EnableBastion: 'false'
+      DBExportLogToCloudwatch: 'error'
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      StorageIOPS: 1000
+    template: templates/rds-mysql-main.template.yaml
+    regions:
+      - eu-west-1
+  rds-postgres:
+    parameters:
+      AvailabilityZones: $[taskcat_genaz_3]
+      DBMasterUserPassword: $[taskcat_genpass_128A]
+      DBExportLogToCloudwatch: 'error'
+      EnableBastion: 'false'
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      StorageIOPS: 1000
+    template: templates/rds-postgres-main.template.yaml
     regions:
       - us-west-2
+  rds-sqlserver:
+    parameters:
+      AvailabilityZones: $[taskcat_genaz_3]
+      DBMasterUserPassword: $[taskcat_genpass_128A]
+      DBExportLogToCloudwatch: 'error'
+      EnableBastion: 'false'
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      StorageIOPS: 1000
+    template: templates/rds-sqlserver-main.template.yaml
+    regions:
+      - us-east-1
