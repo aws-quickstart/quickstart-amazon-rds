@@ -1,4 +1,4 @@
-Description: "AWS VPC + Linux bastion host + RDS MySQL, Do Not Remove Apache License Version 2.0 (qs-1u8fg50m0) May,31,2023"
+Description: "AWS VPC + Linux bastion host + RDS MariaDB, Do Not Remove Apache License Version 2.0 (qs-1u8fg50m0) June 30,2023"
 Metadata:
   LICENSE: Apache License Version 2.0
   cfn-lint:
@@ -36,7 +36,6 @@ Metadata:
       - DBEngineVersion
       - DBInstanceClass
       - DBMultiAZ
-      - DBMultiAZCluster
       - DBPort
       - DBName
       - DBMasterUsername
@@ -149,8 +148,6 @@ Metadata:
         default: Database master password
       DBMultiAZ:
         default: RDS Multi-AZ DB Instance deployment
-      DBMultiAZCluster:
-        default: RDS Multi-AZ DB Cluster deployment
       DBName:
         default: Database name
       DBPort:
@@ -320,32 +317,40 @@ Parameters:
   DBEngineVersion:
     Description: "Select Database Engine Version."
     Type: String
-    Default: 8.0.32
+    Default: 10.6.14
     AllowedValues:
-      - 5.7.33
-      - 5.7.34
-      - 5.7.37
-      - 5.7.38
-      - 5.7.39
-      - 5.7.40
-      - 8.0.23
-      - 8.0.25
-      - 8.0.26
-      - 8.0.27
-      - 8.0.28
-      - 8.0.30
-      - 8.0.31
-      - 8.0.32
+      - 10.3.35
+      - 10.3.36
+      - 10.3.37
+      - 10.3.38
+      - 10.3.39
+      - 10.4.25
+      - 10.4.26
+      - 10.4.27
+      - 10.4.28
+      - 10.4.29
+      - 10.4.30
+      - 10.5.16
+      - 10.5.17
+      - 10.5.18
+      - 10.5.19
+      - 10.5.20
+      - 10.5.21
+      - 10.6.8
+      - 10.6.10
+      - 10.6.11
+      - 10.6.12
+      - 10.6.13
+      - 10.6.14
   DBExportLogToCloudwatch:
     Default: ''
-    Description: "Specify the comma-delimited list of database logs (error, slowquery, audit, general) to export to CloudWatch Logs."
+    Description: "Specify the comma-delimited list of database logs (audit, error, general, slowquery) to export to CloudWatch Logs."
     Type: CommaDelimitedList
   DBInstanceClass:
-    Default: db.r5.large
+    Default: db.r6gd.large
     Description: >-
       The database instance type. 
-      Please see supported instance types for the MySQL version selected https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html.
-      For RDS Multi-AZ cluster supported instance class, please refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/create-multi-az-db-cluster.html#create-multi-az-db-cluster-settings.
+      Please see supported instance types for the MariaDB version selected https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html.
     Type: String
     AllowedValues:
       - db.m4.large
@@ -504,16 +509,9 @@ Parameters:
     Default: "false"
     Description: "Select 'true' to deploy a RDS Multi-AZ DB instance."
     Type: String
-  DBMultiAZCluster:
-    Description: "Select 'true' to deploy a RDS Multi-AZ DB cluster with two readable standbys."
-    Type: String
-    Default: "false"
-    AllowedValues:
-        - "true"
-        - "false"
   DBName:
     AllowedPattern: "[a-zA-Z0-9]*"
-    Description: "Name of the initial MySQL database to create."
+    Description: "Name of the initial MariaDB database to create."
     MaxLength: "64"
     MinLength: "0"
     Default: 'sampleapp'
@@ -527,7 +525,7 @@ Parameters:
     MaxValue: 65535
   DBStorageType:
     Default: io1
-    Description: "Select the EBS storage type for the RDS MySQL database. RDS Multi-AZ DB Cluster deployment only supports io1 storage type."
+    Description: "Select the EBS storage type for the RDS MariaDB database. RDS Multi-AZ DB Cluster deployment only supports io1 storage type."
     Type: String
     AllowedValues:
       - gp2
@@ -732,9 +730,9 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       #Update the following to the S3 location
-      TemplateURL: 
+      TemplateURL:
         !Sub
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/rds-mysql.template.yaml'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/rds-mariadb.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
@@ -765,7 +763,6 @@ Resources:
         ManageMasterUserPassword: !Ref ManageMasterUserPassword
         DBMasterUserPassword: !Ref DBMasterUserPassword
         DBMultiAZ: !Ref DBMultiAZ
-        DBMultiAZCluster: !Ref DBMultiAZCluster
         DBAutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
         DBBackupRetentionPeriod: !Ref DBBackupRetentionPeriod
         EnableIAMDBAuth: !Ref EnableIAMDBAuth

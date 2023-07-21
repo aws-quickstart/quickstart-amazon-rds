@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: "Amazon RDS MySQL, Do Not Remove Apache License Version 2.0 (qs-1u8fg50ni) May,31,2023"
+Description: "Amazon RDS MariaDB, Do Not Remove Apache License Version 2.0 (qs-1u8fg50ni) June 30,2023"
 Metadata:
   LICENSE: Apache License Version 2.0
   cfn-lint:
@@ -29,7 +29,6 @@ Metadata:
       - DBEngineVersion
       - DBInstanceClass
       - DBMultiAZ
-      - DBMultiAZCluster
       - DBPort
       - DBName
       - DBMasterUsername
@@ -102,8 +101,6 @@ Metadata:
         default: Database master password
       DBMultiAZ:
         default: RDS Multi-AZ DB Instance deployment
-      DBMultiAZCluster:
-        default: RDS Multi-AZ DB Cluster deployment
       DBName:
         default: Database name
       DBPort:
@@ -190,32 +187,40 @@ Parameters:
   DBEngineVersion:
     Description: "Select Database Engine Version."
     Type: String
-    Default: 8.0.32
+    Default: 10.6.14
     AllowedValues:
-      - 5.7.33
-      - 5.7.34
-      - 5.7.37
-      - 5.7.38
-      - 5.7.39
-      - 5.7.40
-      - 8.0.23
-      - 8.0.25
-      - 8.0.26
-      - 8.0.27
-      - 8.0.28
-      - 8.0.30
-      - 8.0.31
-      - 8.0.32
+      - 10.3.35
+      - 10.3.36
+      - 10.3.37
+      - 10.3.38
+      - 10.3.39
+      - 10.4.25
+      - 10.4.26
+      - 10.4.27
+      - 10.4.28
+      - 10.4.29
+      - 10.4.30
+      - 10.5.16
+      - 10.5.17
+      - 10.5.18
+      - 10.5.19
+      - 10.5.20
+      - 10.5.21
+      - 10.6.8
+      - 10.6.10
+      - 10.6.11
+      - 10.6.12
+      - 10.6.13
+      - 10.6.14
   DBExportLogToCloudwatch:
     Default: ''
-    Description: "Specify the comma-delimited list of database logs (error, slowquery, audit, general) to export to CloudWatch Logs."
+    Description: "Specify the comma-delimited list of database logs  (audit, error, general, slowquery) to export to CloudWatch Logs."
     Type: CommaDelimitedList
   DBInstanceClass:
-    Default: db.r5.large
+    Default: db.r6gd.large
     Description: >-
       The database instance type. 
-      Please see supported instance types for the MySQL version selected https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html.
-      For RDS Multi-AZ cluster supported instance class, please refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/create-multi-az-db-cluster.html#create-multi-az-db-cluster-settings.
+      Please see supported instance types for the MariaDB version selected https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html.
     Type: String
     AllowedValues:
       - db.m4.large
@@ -374,16 +379,9 @@ Parameters:
     Default: "false"
     Description: "Select 'true' to deploy a RDS Multi-AZ DB instance."
     Type: String
-  DBMultiAZCluster:
-    Description: "Select 'true' to deploy a RDS Multi-AZ DB cluster with two readable standbys."
-    Type: String
-    Default: "false"
-    AllowedValues:
-        - "true"
-        - "false"
   DBName:
     AllowedPattern: "[a-zA-Z0-9]*"
-    Description: "Name of the initial MySQL database to create."
+    Description: "Name of the initial MariaDB database to create."
     MaxLength: "64"
     MinLength: "0"
     Default: 'sampleapp'
@@ -397,7 +395,7 @@ Parameters:
     MaxValue: 65535
   DBStorageType:
     Default: io1
-    Description: "Select the EBS storage type for the RDS MySQL database. RDS Multi-AZ DB Cluster deployment only supports io1 storage type."
+    Description: "Select the EBS storage type for the RDS MariaDB database. RDS Multi-AZ DB Cluster deployment only supports io1 storage type."
     Type: String
     AllowedValues:
       - gp2
@@ -545,34 +543,52 @@ Parameters:
 ###############################################################################      
 Mappings:
   DBFamilyMap:
-    "5.7.33":
-      "family": "mysql5.7"
-    "5.7.34":
-      "family": "mysql5.7"
-    "5.7.37":
-      "family": "mysql5.7"
-    "5.7.38":
-      "family": "mysql5.7"
-    "5.7.39":
-      "family": "mysql5.7"
-    "5.7.40":
-      "family": "mysql5.7"
-    "8.0.23":
-      "family": "mysql8.0"
-    "8.0.25":
-      "family": "mysql8.0"
-    "8.0.26":
-      "family": "mysql8.0"
-    "8.0.27":
-      "family": "mysql8.0"
-    "8.0.28":
-      "family": "mysql8.0"
-    "8.0.30":
-      "family": "mysql8.0"
-    "8.0.31":
-      "family": "mysql8.0"
-    "8.0.32":
-      "family": "mysql8.0"
+    "10.3.35":
+      "family": "mariadb10.3"
+    "10.3.36":
+      "family": "mariadb10.3"
+    "10.3.37":
+      "family": "mariadb10.3"
+    "10.3.38":
+      "family": "mariadb10.3"
+    "10.3.39":
+      "family": "mariadb10.3"
+    "10.4.25":
+      "family": "mariadb10.4"
+    "10.4.26":
+      "family": "mariadb10.4"
+    "10.4.27":
+      "family": "mariadb10.4"
+    "10.4.28":
+      "family": "mariadb10.4"
+    "10.4.29":
+      "family": "mariadb10.4"
+    "10.4.30":
+      "family": "mariadb10.4"
+    "10.5.16":
+      "family": "mariadb10.5"
+    "10.5.17":
+      "family": "mariadb10.5"
+    "10.5.18":
+      "family": "mariadb10.5"
+    "10.5.19":
+      "family": "mariadb10.5"
+    "10.5.20":
+      "family": "mariadb10.5"
+    "10.5.21":
+      "family": "mariadb10.5"
+    "10.6.8":
+      "family": "mariadb10.6"
+    "10.6.10":
+      "family": "mariadb10.6"
+    "10.6.11":
+      "family": "mariadb10.6"
+    "10.6.12":
+      "family": "mariadb10.6"
+    "10.6.13":
+      "family": "mariadb10.6"
+    "10.6.14":
+      "family": "mariadb10.6"
 
 ###############################################################################
 # Conditions
@@ -594,19 +610,9 @@ Conditions:
     - !Equals 
       - !Join ["", !Ref DBExportLogToCloudwatch]
       - ''
-  isDBCluster: !Equals 
-    - !Ref DBMultiAZCluster
-    - 'true' 
-  isDBInstance: !Not [!Condition isDBCluster]
   EventSubscription: !Equals
     - !Ref EnableEventSubscription
     - 'true'
-  EventSubscriptionDBCluster: !And
-    - !Condition EventSubscription
-    - !Condition isDBCluster
-  EventSubscriptionDBInstance: !And
-    - !Condition EventSubscription
-    - !Condition isDBInstance
   EnableEM: !Equals
     - !Ref EnableEnhancedMonitoring
     - 'true'
@@ -756,22 +762,9 @@ Resources:
         - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole
 
   RDSDBPG:
-    Condition: isDBInstance
     Type: AWS::RDS::DBParameterGroup
     Properties:
-      Description: !Join [ "- ", [ "RDS MySQL Database Instance Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
-      Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"]
-      Parameters:
-        slow_query_log: 1
-        long_query_time: 5
-        log_output: 'FILE'
-        innodb_print_all_deadlocks: 1
-  
-  RDSDBCPG:
-    Condition: isDBCluster
-    Type: AWS::RDS::DBClusterParameterGroup
-    Properties:
-      Description: !Join [ "- ", [ "RDS MySQL Database Cluster Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
+      Description: !Join [ "- ", [ "RDS MariaDB Database Instance Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
       Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"]
       Parameters:
         slow_query_log: 1
@@ -781,7 +774,6 @@ Resources:
   
   MAZDBI:
     Type: "AWS::RDS::DBInstance"
-    Condition: isDBInstance
     DeletionPolicy: Snapshot
     UpdateReplacePolicy: Snapshot
     Properties:
@@ -799,7 +791,7 @@ Resources:
       EnableCloudwatchLogsExports: !If [isExportCWLogs, !Ref DBExportLogToCloudwatch, !Ref "AWS::NoValue"]
       EnableIAMDatabaseAuthentication: !Ref EnableIAMDBAuth
       EnablePerformanceInsights: !Ref EnablePerformanceInsights
-      Engine: mysql
+      Engine: MariaDB
       EngineVersion: !Ref DBEngineVersion
       Iops: !If [isGP2, !Ref "AWS::NoValue", !Ref StorageIOPS]
       KmsKeyId: !If [UseDatabaseEncryption, !GetAtt EncryptionKey.Arn, !Ref 'AWS::NoValue']
@@ -846,80 +838,6 @@ Resources:
           - [!Ref RDSSecurityGroup]
           - [!Ref CustomDBSecurityGroup] 
   
-  MAZDBC:
-    Metadata:
-      cfn-lint:
-        config:
-          ignore_checks:
-            - ERDSStorageEncryptionEnabled
-          ignore_reasons:
-            - ERDSStorageEncryptionEnabled: "StorageEncryption is conditional"
-    Type: "AWS::RDS::DBCluster"
-    Condition: isDBCluster
-    DeletionPolicy: Snapshot
-    UpdateReplacePolicy: Snapshot
-    Properties:
-      AllocatedStorage: !Ref DBAllocatedStorage
-      AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
-      BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
-      DBClusterIdentifier: !Sub rdsmazc-${AWS::StackName}
-      DBClusterInstanceClass: !Ref DBInstanceClass
-      DBClusterParameterGroupName: !Ref RDSDBCPG
-      DBSubnetGroupName: !Ref RDSDBSubnetGroup
-      DatabaseName:
-        !If
-        - DoCreateDatabase
-        - !Ref DBName
-        - !Ref AWS::NoValue
-      EnableCloudwatchLogsExports: !If [isExportCWLogs, !Ref DBExportLogToCloudwatch, !Ref "AWS::NoValue"]
-      # IAM DB authentication currently not supported for RDS Multi AZ DB Cluster
-      # EnableIAMDatabaseAuthentication: !Ref EnableIAMDBAuth
-      Engine: mysql
-      EngineVersion: !Ref DBEngineVersion
-      Iops: !Ref StorageIOPS
-      KmsKeyId: !If [UseDatabaseEncryption, !GetAtt EncryptionKey.Arn, !Ref 'AWS::NoValue']
-      MasterUsername: !Ref DBMasterUsername
-      ManageMasterUserPassword: !Ref ManageMasterUserPassword
-      MasterUserPassword: !If [UseSecretsManager, !Ref 'AWS::NoValue', !Ref DBMasterUserPassword]
-      MasterUserSecret:
-        KmsKeyId: !If [UseSecretsManager, !Ref EncryptionKey, !Ref 'AWS::NoValue']
-      MonitoringInterval: !If [EnableEM, !Ref MonitoringInterval, !Ref 'AWS::NoValue']
-      MonitoringRoleArn: !If [EnableEM, !GetAtt MRole.Arn, !Ref 'AWS::NoValue']
-      PerformanceInsightsEnabled: !Ref EnablePerformanceInsights
-      PerformanceInsightsKmsKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
-      PerformanceInsightsRetentionPeriod: !If [EnablePI, !Ref PerformanceInsightsRetentionPeriod, !Ref 'AWS::NoValue']
-      Port: !Ref DBPort
-      PubliclyAccessible: !Ref PubliclyAccessible
-      StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref 'AWS::NoValue']
-      StorageType: io1
-      Tags:
-        -
-          Key: Name
-          Value: !Sub MAZDBC-${AWS::StackName}
-        -
-          Key: EnvironmentStage
-          Value: !Ref EnvironmentStage
-        -
-          Key: Application
-          Value: !Ref Application
-        -
-          Key: ApplicationVersion
-          Value: !Ref ApplicationVersion
-        -
-          Key: ProjectCostCenter
-          Value: !Ref ProjectCostCenter
-        -
-          Key: Confidentiality
-          Value: !Ref Confidentiality
-        -
-          Key: Compliance
-          Value: !Ref Compliance
-      VpcSecurityGroupIds:
-        !If
-          - CreateSecurityGroup
-          - [!Ref RDSSecurityGroup]
-          - [!Ref CustomDBSecurityGroup]
-  
   CPUUtilizationAlarm1:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
@@ -929,8 +847,7 @@ Resources:
       AlarmDescription: 'CPU_Utilization'
       Dimensions:
       - Name: DBInstanceIdentifier
-        Value:
-          !If [isDBInstance, !Ref MAZDBI, !Sub '${MAZDBC}-instance-1']
+        Value: !Ref MAZDBI
       MetricName: CPUUtilization
       Statistic: Maximum
       Namespace: 'AWS/RDS'
@@ -940,61 +857,6 @@ Resources:
       Period: 60
       EvaluationPeriods: 5
       TreatMissingData: 'notBreaching'
-
-  CPUUtilizationAlarm2:
-    Type: "AWS::CloudWatch::Alarm"
-    Condition: isDBCluster
-    Properties:
-      ActionsEnabled: true
-      AlarmActions:
-      - Ref: DBSNSTopic
-      AlarmDescription: 'CPU_Utilization'
-      Dimensions:
-      - Name: DBInstanceIdentifier
-        Value:
-          !Sub '${MAZDBC}-instance-2'
-      MetricName: CPUUtilization
-      Statistic: Maximum
-      Namespace: 'AWS/RDS'
-      Threshold: 80
-      Unit: Percent
-      ComparisonOperator: 'GreaterThanOrEqualToThreshold'
-      Period: 60
-      EvaluationPeriods: 5
-      TreatMissingData: 'notBreaching'
-
-  CPUUtilizationAlarm3:
-    Type: "AWS::CloudWatch::Alarm"
-    Condition: isDBCluster
-    Properties:
-      ActionsEnabled: true
-      AlarmActions:
-      - Ref: DBSNSTopic
-      AlarmDescription: 'CPU_Utilization'
-      Dimensions:
-      - Name: DBInstanceIdentifier
-        Value:
-          !Sub '${MAZDBC}-instance-3'
-      MetricName: CPUUtilization
-      Statistic: Maximum
-      Namespace: 'AWS/RDS'
-      Threshold: 80
-      Unit: Percent
-      ComparisonOperator: 'GreaterThanOrEqualToThreshold'
-      Period: 60
-      EvaluationPeriods: 5
-      TreatMissingData: 'notBreaching'
-
-  DatabaseClusterEventSubscription:
-    Condition: EventSubscriptionDBCluster
-    Type: 'AWS::RDS::EventSubscription'
-    Properties:
-      EventCategories:
-      - failover
-      - notification
-      SnsTopicArn: !Ref DBSNSTopic
-      SourceIds: [!Ref MAZDBC]
-      SourceType: 'db-cluster'
   
   DatabaseInstanceEventSubscription:
     Condition: EventSubscription
@@ -1013,14 +875,12 @@ Resources:
       - recovery
       - security patching
       SnsTopicArn: !Ref DBSNSTopic
-      SourceIds:
-      - !If [isDBCluster, !Sub '${MAZDBC}-instance-1', !Ref MAZDBI]
-      - !If [isDBCluster, !Sub '${MAZDBC}-instance-2', !Ref "AWS::NoValue"]
-      - !If [isDBCluster, !Sub '${MAZDBC}-instance-3', !Ref "AWS::NoValue"]
+      SourceIds: 
+        - !Ref MAZDBI
       SourceType: 'db-instance'
   
   DBParameterGroupEventSubscription:
-    Condition: EventSubscriptionDBInstance
+    #Condition: EventSubscriptionDBInstance
     Type: 'AWS::RDS::EventSubscription'
     Properties:
       EventCategories:
@@ -1043,20 +903,16 @@ Outputs:
   MasterUserSecret:
     Condition: UseSecretsManager
     Description: "Master Credentials ARN"
-    Value: !If [isDBCluster, !Sub "${MAZDBC.MasterUserSecret.SecretArn}", !Sub "${MAZDBI.MasterUserSecret.SecretArn}"]
+    Value: !Sub "${MAZDBI.MasterUserSecret.SecretArn}"
   RDSEndPointAddress:
     Description: "Amazon RDS write endpoint"
-    Value: !If [isDBCluster, !Sub "${MAZDBC.Endpoint.Address}", !Sub "${MAZDBI.Endpoint.Address}"]
-  RDSReadEndPointAddress:
-    Condition: isDBCluster
-    Description: "Amazon RDS read endpoint"
-    Value: !Sub ${MAZDBC.ReadEndpoint.Address}
+    Value: !Sub "${MAZDBI.Endpoint.Address}"
   RDSEndPointPort:
     Description: "Amazon RDS port"
-    Value: !If [isDBCluster, !Sub "${MAZDBC.Endpoint.Port}", !Sub "${MAZDBI.Endpoint.Port}"]
+    Value: !Sub "${MAZDBI.Endpoint.Port}"
   RDSEndPoints:
     Description: "Full Amazon RDS write endpoint"
-    Value: !If [isDBCluster, !Sub "${MAZDBC.Endpoint.Address}:${MAZDBC.Endpoint.Port}/${DBName}",  !Sub "${MAZDBI.Endpoint.Address}:${MAZDBI.Endpoint.Port}/${DBName}"]
+    Value: !Sub "${MAZDBI.Endpoint.Address}:${MAZDBI.Endpoint.Port}/${DBName}"
   RDSEncryptionKey:
     Condition: UseDatabaseEncryption
     Description: "The alias of the encryption key created for RDS"
