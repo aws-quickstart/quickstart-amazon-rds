@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: "Amazon RDS PostgreSQL, Do Not Remove Apache License Version 2.0 (qs-1u8fagclk) May,31,2023"
+Description: "Amazon RDS Oracle, Do Not Remove Apache License Version 2.0 (qs-5j3ps80wk) Aug 12, 2023"
 Metadata:
   LICENSE: Apache License Version 2.0
   cfn-lint:
@@ -26,7 +26,10 @@ Metadata:
     - Label:
         default: Database General configuration
       Parameters:
+      - DBArchitecture
+      - DBEdition
       - DBEngineVersion
+      - DBLicense
       - DBInstanceClass
       - DBPort
       - DBName
@@ -34,10 +37,8 @@ Metadata:
       - ManageMasterUserPassword
       - DBMasterUserPassword
       - DBMultiAZ
-      - DBMultiAZCluster
       - DBAutoMinorVersionUpgrade
       - DBBackupRetentionPeriod
-      - EnableIAMDBAuth
     - Label:
         default: Database Storage configuration
       Parameters:
@@ -88,26 +89,30 @@ Metadata:
         default: Database allocated storage size in GiB
       DBAllocatedStorageEncrypted:
         default: Database encryption enabled
+      DBArchitecture:
+        default: CDB or NonCDB
       DBAutoMinorVersionUpgrade:
         default: Database auto minor version upgrade
       DBBackupRetentionPeriod:
         default: Database backup retention period
+      DBEdition:
+        default: Oracle Edition
       DBEngineVersion:
         default: Database Engine Version
       DBExportLogToCloudwatch:
         default: Export Database Log to CloudWatch  
       DBInstanceClass:
         default: Database instance class
+      DBLicense:
+        default: Database license
       DBMasterUsername:
         default: Database master username
       DBMasterUserPassword:
         default: Database master password
       DBMultiAZ:
         default: RDS Multi-AZ DB Instance deployment
-      DBMultiAZCluster:
-        default: RDS Multi-AZ DB Cluster deployment
       DBName:
-        default: Database name
+        default: Oracle SID
       DBPort:
         default: Database port
       DBStorageType:
@@ -116,14 +121,12 @@ Metadata:
         default: Enable Enhanced Monitoring
       EnableEventSubscription:
         default: Enable Event Subscription
-      EnableIAMDBAuth:
-        default: Enable IAM Database Authentication
       EnablePerformanceInsights:
         default: Enable RDS Performance Insights
       EnvironmentStage:
         default: Environment stage
       ManageMasterUserPassword:
-        default: Manage DB master user password with AWS Secrets Manager
+        default: (NonCDB ONLY) Manage DB master user password with AWS Secrets Manager
       MaxStorageThreshold:
         default: Limit for storage auto scaling in GiB
       MonitoringInterval:
@@ -179,6 +182,13 @@ Parameters:
       - "false"
     Description: Whether or not to encrypt the database.
     Type: String
+  DBArchitecture:
+    Description: "Select multitenant architecture"
+    Type: String
+    Default: NonCDB
+    AllowedValues:
+      - NonCDB
+      - CDB
   DBAutoMinorVersionUpgrade:
     AllowedValues:
       - "true"
@@ -192,44 +202,54 @@ Parameters:
     Type: Number
     MinValue: 0
     MaxValue: 35
+  DBEdition:
+    Description: "Select Oracle Edition"
+    Type: String
+    Default: OracleEnterpriseEdition
+    AllowedValues:
+      - OracleEnterpriseEdition
+      - OracleStandardEditionTwo
   DBEngineVersion:
     Description: Select Database Engine Version
     Type: String
-    Default: 15.3
+    Default: 19.0.0.0.ru-2023-07.rur-2023-07.r1
     AllowedValues:
-      - 11.16
-      - 11.17
-      - 11.18
-      - 11.19
-      - 11.20
-      - 12.11
-      - 12.12
-      - 12.13
-      - 12.14
-      - 12.15
-      - 13.7 
-      - 13.8 
-      - 13.9 
-      - 13.10
-      - 13.11
-      - 14.3 
-      - 14.4 
-      - 14.5 
-      - 14.6 
-      - 14.7 
-      - 14.8 
-      - 15.2 
-      - 15.3
+      - 19.0.0.0.ru-2019-07.rur-2019-07.r1
+      - 19.0.0.0.ru-2019-10.rur-2019-10.r1
+      - 19.0.0.0.ru-2020-01.rur-2020-01.r1
+      - 19.0.0.0.ru-2020-04.rur-2020-04.r1
+      - 19.0.0.0.ru-2020-07.rur-2020-07.r1
+      - 19.0.0.0.ru-2020-10.rur-2020-10.r1
+      - 19.0.0.0.ru-2021-01.rur-2021-01.r1
+      - 19.0.0.0.ru-2021-01.rur-2021-01.r2
+      - 19.0.0.0.ru-2021-04.rur-2021-04.r1
+      - 19.0.0.0.ru-2021-07.rur-2021-07.r1
+      - 19.0.0.0.ru-2021-10.rur-2021-10.r1
+      - 19.0.0.0.ru-2022-01.rur-2022-01.r1
+      - 19.0.0.0.ru-2022-04.rur-2022-04.r1
+      - 19.0.0.0.ru-2022-07.rur-2022-07.r1
+      - 19.0.0.0.ru-2022-10.rur-2022-10.r1
+      - 19.0.0.0.ru-2023-01.rur-2023-01.r1
+      - 19.0.0.0.ru-2023-01.rur-2023-01.r2
+      - 19.0.0.0.ru-2023-04.rur-2023-04.r1
+      - 19.0.0.0.ru-2023-07.rur-2023-07.r1
+      - 21.0.0.0.ru-2022-01.rur-2022-01.r1
+      - 21.0.0.0.ru-2022-04.rur-2022-04.r1
+      - 21.0.0.0.ru-2022-07.rur-2022-07.r1
+      - 21.0.0.0.ru-2022-10.rur-2022-10.r1
+      - 21.0.0.0.ru-2023-01.rur-2023-01.r1
+      - 21.0.0.0.ru-2023-01.rur-2023-01.r2
+      - 21.0.0.0.ru-2023-04.rur-2023-04.r1
+      - 21.0.0.0.ru-2023-07.rur-2023-07.r1
   DBExportLogToCloudwatch:
     Default: ''
-    Description: Specify the comma-delimited list of database logs (postgresql, upgrade) to export to CloudWatch Logs.
+    Description: Specify the comma-delimited list of database logs (alert, audit, listener, trace) to export to CloudWatch Logs.
     Type: CommaDelimitedList
   DBInstanceClass:
     Default: db.r5.large
     Description: >-
       The database instance type. 
-      Please see supported instance types for the PostgreSQL version selected https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html.
-      For RDS Multi-AZ cluster supported instance class, please refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/create-multi-az-db-cluster.html#create-multi-az-db-cluster-settings.
+      Please see supported instance types for the RDS Oracle Engine version and edition selected https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html.
     Type: String
     AllowedValues:
       - db.m5.12xlarge
@@ -238,8 +258,6 @@ Parameters:
       - db.m5.2xlarge
       - db.m5.4xlarge
       - db.m5.8xlarge
-      - db.m5.large
-      - db.m5.xlarge
       - db.m5d.12xlarge
       - db.m5d.16xlarge
       - db.m5d.24xlarge
@@ -248,20 +266,8 @@ Parameters:
       - db.m5d.8xlarge
       - db.m5d.large
       - db.m5d.xlarge
-      - db.m6g.12xlarge
-      - db.m6g.16xlarge
-      - db.m6g.2xlarge
-      - db.m6g.4xlarge
-      - db.m6g.8xlarge
-      - db.m6g.large
-      - db.m6g.xlarge
-      - db.m6gd.12xlarge
-      - db.m6gd.16xlarge
-      - db.m6gd.2xlarge
-      - db.m6gd.4xlarge
-      - db.m6gd.8xlarge
-      - db.m6gd.large
-      - db.m6gd.xlarge
+      - db.m5.large
+      - db.m5.xlarge
       - db.m6i.12xlarge
       - db.m6i.16xlarge
       - db.m6i.24xlarge
@@ -271,29 +277,40 @@ Parameters:
       - db.m6i.8xlarge
       - db.m6i.large
       - db.m6i.xlarge
-      - db.m7g.12xlarge
-      - db.m7g.16xlarge
-      - db.m7g.2xlarge
-      - db.m7g.4xlarge
-      - db.m7g.8xlarge
-      - db.m7g.large
-      - db.m7g.xlarge
       - db.r5.12xlarge
+      - db.r5.12xlarge.tpc2.mem2x
       - db.r5.16xlarge
       - db.r5.24xlarge
       - db.r5.2xlarge
+      - db.r5.2xlarge.tpc1.mem2x
+      - db.r5.2xlarge.tpc2.mem4x
+      - db.r5.2xlarge.tpc2.mem8x
       - db.r5.4xlarge
+      - db.r5.4xlarge.tpc2.mem2x
+      - db.r5.4xlarge.tpc2.mem3x
+      - db.r5.4xlarge.tpc2.mem4x
+      - db.r5.6xlarge.tpc2.mem4x
       - db.r5.8xlarge
-      - db.r5.large
-      - db.r5.xlarge
+      - db.r5.8xlarge.tpc2.mem3x
       - db.r5b.12xlarge
       - db.r5b.16xlarge
       - db.r5b.24xlarge
       - db.r5b.2xlarge
+      - db.r5b.2xlarge.tpc1.mem2x
+      - db.r5b.2xlarge.tpc2.mem4x
+      - db.r5b.2xlarge.tpc2.mem8x
       - db.r5b.4xlarge
+      - db.r5b.4xlarge.tpc2.mem2x
+      - db.r5b.4xlarge.tpc2.mem3x
+      - db.r5b.4xlarge.tpc2.mem4x
+      - db.r5b.6xlarge.tpc2.mem4x
       - db.r5b.8xlarge
+      - db.r5b.8xlarge.tpc2.mem3x
       - db.r5b.large
+      - db.r5b.large.tpc1.mem2x
       - db.r5b.xlarge
+      - db.r5b.xlarge.tpc2.mem2x
+      - db.r5b.xlarge.tpc2.mem4x
       - db.r5d.12xlarge
       - db.r5d.16xlarge
       - db.r5d.24xlarge
@@ -302,20 +319,11 @@ Parameters:
       - db.r5d.8xlarge
       - db.r5d.large
       - db.r5d.xlarge
-      - db.r6g.12xlarge
-      - db.r6g.16xlarge
-      - db.r6g.2xlarge
-      - db.r6g.4xlarge
-      - db.r6g.8xlarge
-      - db.r6g.large
-      - db.r6g.xlarge
-      - db.r6gd.12xlarge
-      - db.r6gd.16xlarge
-      - db.r6gd.2xlarge
-      - db.r6gd.4xlarge
-      - db.r6gd.8xlarge
-      - db.r6gd.large
-      - db.r6gd.xlarge
+      - db.r5.large
+      - db.r5.large.tpc1.mem2x
+      - db.r5.xlarge
+      - db.r5.xlarge.tpc2.mem2x
+      - db.r5.xlarge.tpc2.mem4x
       - db.r6i.12xlarge
       - db.r6i.16xlarge
       - db.r6i.24xlarge
@@ -325,32 +333,22 @@ Parameters:
       - db.r6i.8xlarge
       - db.r6i.large
       - db.r6i.xlarge
-      - db.r7g.12xlarge
-      - db.r7g.16xlarge
-      - db.r7g.2xlarge
-      - db.r7g.4xlarge
-      - db.r7g.8xlarge
-      - db.r7g.large
-      - db.r7g.xlarge
       - db.t3.2xlarge
       - db.t3.large
       - db.t3.medium
-      - db.t3.micro
       - db.t3.small
       - db.t3.xlarge
-      - db.t4g.2xlarge
-      - db.t4g.large
-      - db.t4g.medium
-      - db.t4g.micro
-      - db.t4g.small
-      - db.t4g.xlarge
-      - db.x2g.12xlarge
-      - db.x2g.16xlarge
-      - db.x2g.2xlarge
-      - db.x2g.4xlarge
-      - db.x2g.8xlarge
-      - db.x2g.large
-      - db.x2g.xlarge
+      - db.x1.16xlarge
+      - db.x1.32xlarge
+      - db.x1e.16xlarge
+      - db.x1e.2xlarge
+      - db.x1e.32xlarge
+      - db.x1e.4xlarge
+      - db.x1e.8xlarge
+      - db.x1e.xlarge
+      - db.x2idn.16xlarge
+      - db.x2idn.24xlarge
+      - db.x2idn.32xlarge
       - db.x2iedn.16xlarge
       - db.x2iedn.24xlarge
       - db.x2iedn.2xlarge
@@ -358,6 +356,25 @@ Parameters:
       - db.x2iedn.4xlarge
       - db.x2iedn.8xlarge
       - db.x2iedn.xlarge
+      - db.x2iezn.12xlarge
+      - db.x2iezn.2xlarge
+      - db.x2iezn.4xlarge
+      - db.x2iezn.6xlarge
+      - db.x2iezn.8xlarge
+      - db.z1d.12xlarge
+      - db.z1d.2xlarge
+      - db.z1d.3xlarge
+      - db.z1d.6xlarge
+      - db.z1d.large
+      - db.z1d.xlarge
+  DBLicense:
+    Default: bring-your-own-license
+    Description: >-
+      Database license. Only valid for Oracle Standard Edition Two.
+    Type: String
+    AllowedValues:
+      - bring-your-own-license
+      - license-included
   DBMasterUsername:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
@@ -370,7 +387,7 @@ Parameters:
       ^(?=^.{8,255}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)((?=.*[^A-Za-z0-9])(?!.*[@/"'])).*$
     ConstraintDescription: Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol
     Description: (Required) The database master user password. Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol. Ignored if 'Manage DB master user password with AWS Secrets Manager' option is set to 'true'.
-    MaxLength: "128"
+    MaxLength: "30"
     MinLength: "8"
     NoEcho: "True"
     Type: String
@@ -381,22 +398,15 @@ Parameters:
     Default: "false"
     Description: "Select 'true' to deploy a RDS Multi-AZ DB instance."
     Type: String
-  DBMultiAZCluster:
-    Description: "Select 'true' to deploy a RDS Multi-AZ DB cluster with two readable standbys."
-    Type: String
-    Default: "false"
-    AllowedValues:
-        - "true"
-        - "false"
   DBName:
     AllowedPattern: "[a-zA-Z0-9]*"
-    Description: "Name of the initial PostgreSQL database to create."
-    MaxLength: "63"
+    Description: "Oracle SID"
+    MaxLength: "8"
     MinLength: "0"
-    Default: 'sampleapp'
+    Default: 'ORCL'
     Type: String
   DBPort:
-    Default: 5432
+    Default: 1521
     Description: "The port the instance will listen for connections on."
     Type: Number
     ConstraintDescription: 'Must be in the range [1150-65535].'
@@ -404,7 +414,7 @@ Parameters:
     MaxValue: 65535
   DBStorageType:
     Default: io1
-    Description: Select the EBS storage type for the RDS PostgreSQL database. RDS Multi-AZ DB Cluster deployment only supports io1 storage type.
+    Description: Select the EBS storage type for the RDS Oracle database.
     Type: String
     AllowedValues:
       - gp2
@@ -424,13 +434,6 @@ Parameters:
     Default: "true"
     Description: "Enables event subscription to Notification List."
     Type: String
-  EnableIAMDBAuth:
-    AllowedValues:
-      - "true"
-      - "false"
-    Default: "true"
-    Description: Enables IAM Database Authentication. Doesn't apply to Multi-AZ DB Cluster deployments.
-    Type: String
   EnablePerformanceInsights:
     AllowedValues:
       - "true"
@@ -442,14 +445,14 @@ Parameters:
     AllowedValues:
       - "true"
       - "false"
-    Default: "true"
-    Description: "Set to 'true' to manage the master user password with AWS Secrets Manager."
+    Default: "false"
+    Description: "Set to 'true' to manage the master user password with AWS Secrets Manager if choosing NonCDB instance."
     Type: String
   MaxStorageThreshold:
     Default: 150
     Description: >-
-      The maximum storage threshold is the limit that you set for autoscaling the DB instance. 
-      Must be at least 10% more than the current allocated storage. Doesn't apply to Multi-AZ DB Cluster deployments.
+      The maximum storage threshold is the limit that you set for autoscaling the DB instance.
+      Must be at least 10% more than the current allocated storage.
       For details, refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.StorageTypes.html#USER_PIOPS.Autoscaling
     Type: Number
   MonitoringInterval:
@@ -487,7 +490,6 @@ Parameters:
     Default: "true"
     Description: >-
       With storage autoscaling enabled, when Amazon RDS detects that you are running out of free database space it automatically scales up your storage.
-      Doesn't apply to Multi-AZ DB Cluster deployments.
       For details, refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.StorageTypes.html#USER_PIOPS.Autoscaling
     Type: String
     AllowedValues:
@@ -496,7 +498,7 @@ Parameters:
   StorageIOPS:
     Default: '0'
     Description: >-
-      If you choose gp3 (and allocate >= 400 GiB) or io1, you must specify provisioned IOPS. Leave at default value otherwise.
+      If you choose gp3 (and allocate >= 200 GiB) or io1, you must specify provisioned IOPS. Leave at default value otherwise.
       For io1, the ratio of provisioned IOPS to allocated storage (in GiB) must be from 0.5 to 50, and range of provisioned IOPS is 1,000-256,000.
       For gp3, the maximum ratio of provisioned IOPS to allocated storage (in GiB) is 500, and range of provisioned IOPS is 12,000–64,000.
       For details, refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html
@@ -505,7 +507,7 @@ Parameters:
     Default: '0'
     Description: >-
       Provisioned throughput in MiBps. 
-      If you choose gp3 (and allocate >= 400 GiB) as storage type, you must specify provisioned throughput. Leave at default value otherwise.
+      If you choose gp3 (and allocate >= 200 GiB) as storage type, you must specify provisioned throughput. Leave at default value otherwise.
       The maximum ratio of provisioned storage throughput (in MiBps) to IOPS is 0.25 and the range of provisioned storage throughput is 500–4,000 MiBps.
       For details, refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html
     Type: String
@@ -566,60 +568,133 @@ Parameters:
   ProjectCostCenter:
     Type: String
     Default: ''
-    Description: "[Optional] Designates the cost center associated with the project of the given AWS resource."
+    Description: "[Optional] Designates the cost center associated with the project of the given AWS resource." 
 
 ###############################################################################
 # Mappings
 ###############################################################################
 Mappings:
   DBFamilyMap:
-    '11.16':
-      family: postgres11
-    '11.17':
-      family: postgres11
-    '11.18':
-      family: postgres11
-    '11.19':
-      family: postgres11
-    '11.20':
-      family: postgres11
-    '12.11':
-      family: postgres12
-    '12.12':
-      family: postgres12
-    '12.13':
-      family: postgres12
-    '12.14':
-      family: postgres12
-    '12.15':
-      family: postgres12
-    '13.7':
-      family: postgres13
-    '13.8':
-      family: postgres13
-    '13.9':
-      family: postgres13
-    '13.10':
-      family: postgres13
-    '13.11':
-      family: postgres13
-    '14.3':
-      family: postgres14
-    '14.4':
-      family: postgres14
-    '14.5':
-      family: postgres14
-    '14.6':
-      family: postgres14
-    '14.7':
-      family: postgres14
-    '14.8':
-      family: postgres14
-    '15.2':
-      family: postgres15
-    '15.3':
-      family: postgres15  
-  
+    19.0.0.0.ru-2019-07.rur-2019-07.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+    19.0.0.0.ru-2019-10.rur-2019-10.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+    19.0.0.0.ru-2020-01.rur-2020-01.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+    19.0.0.0.ru-2020-04.rur-2020-04.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+    19.0.0.0.ru-2020-07.rur-2020-07.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+    19.0.0.0.ru-2020-10.rur-2020-10.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee
+    19.0.0.0.ru-2021-01.rur-2021-01.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+    19.0.0.0.ru-2021-01.rur-2021-01.r2:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+    19.0.0.0.ru-2021-04.rur-2021-04.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+      oraclese2cdb: oracle-se2-cdb-19
+      oracleeecdb: oracle-ee-cdb-19
+    19.0.0.0.ru-2021-07.rur-2021-07.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+      oraclese2cdb: oracle-se2-cdb-19
+      oracleeecdb: oracle-ee-cdb-19
+    19.0.0.0.ru-2021-10.rur-2021-10.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+      oraclese2cdb: oracle-se2-cdb-19
+      oracleeecdb: oracle-ee-cdb-19
+    19.0.0.0.ru-2022-01.rur-2022-01.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+      oraclese2cdb: oracle-se2-cdb-19
+      oracleeecdb: oracle-ee-cdb-19
+    19.0.0.0.ru-2022-04.rur-2022-04.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+      oraclese2cdb: oracle-se2-cdb-19
+      oracleeecdb: oracle-ee-cdb-19
+    19.0.0.0.ru-2022-07.rur-2022-07.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+      oraclese2cdb: oracle-se2-cdb-19
+      oracleeecdb: oracle-ee-cdb-19
+    19.0.0.0.ru-2022-10.rur-2022-10.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+      oraclese2cdb: oracle-se2-cdb-19
+      oracleeecdb: oracle-ee-cdb-19
+    19.0.0.0.ru-2023-01.rur-2023-01.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+      oraclese2cdb: oracle-se2-cdb-19
+      oracleeecdb: oracle-ee-cdb-19
+    19.0.0.0.ru-2023-01.rur-2023-01.r2:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+      oraclese2cdb: oracle-se2-cdb-19
+      oracleeecdb: oracle-ee-cdb-19
+    19.0.0.0.ru-2023-04.rur-2023-04.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+      oraclese2cdb: oracle-se2-cdb-19
+      oracleeecdb: oracle-ee-cdb-19
+    19.0.0.0.ru-2023-07.rur-2023-07.r1:
+      oraclese2: oracle-se2-19
+      oracleee: oracle-ee-19
+      oraclese2cdb: oracle-se2-cdb-19
+      oracleeecdb: oracle-ee-cdb-19
+    21.0.0.0.ru-2022-01.rur-2022-01.r1:
+      oraclese2cdb: oracle-se2-cdb-21
+      oracleeecdb: oracle-ee-cdb-21
+    21.0.0.0.ru-2022-04.rur-2022-04.r1:
+      oraclese2cdb: oracle-se2-cdb-21
+      oracleeecdb: oracle-ee-cdb-21
+    21.0.0.0.ru-2022-07.rur-2022-07.r1:
+      oraclese2cdb: oracle-se2-cdb-21
+      oracleeecdb: oracle-ee-cdb-21
+    21.0.0.0.ru-2022-10.rur-2022-10.r1:
+      oraclese2cdb: oracle-se2-cdb-21
+      oracleeecdb: oracle-ee-cdb-21
+    21.0.0.0.ru-2023-01.rur-2023-01.r1:
+      oraclese2cdb: oracle-se2-cdb-21
+      oracleeecdb: oracle-ee-cdb-21
+    21.0.0.0.ru-2023-01.rur-2023-01.r2:
+      oraclese2cdb: oracle-se2-cdb-21
+      oracleeecdb: oracle-ee-cdb-21
+    21.0.0.0.ru-2023-04.rur-2023-04.r1:
+      oraclese2cdb: oracle-se2-cdb-21
+      oracleeecdb: oracle-ee-cdb-21
+    21.0.0.0.ru-2023-07.rur-2023-07.r1:
+      oraclese2cdb: oracle-se2-cdb-21
+      oracleeecdb: oracle-ee-cdb-21
+
+  DBEngineEdition:
+    OracleEnterpriseEdition: 
+      NonCDB: oracleee
+      CDB: oracleeecdb
+    OracleStandardEditionTwo: 
+      NonCDB: oraclese2
+      CDB: oraclese2cdb
+
+  DBEngine:
+    OracleEnterpriseEdition: 
+      NonCDB: oracle-ee 
+      CDB: oracle-ee-cdb
+    OracleStandardEditionTwo: 
+      NonCDB: oracle-se2
+      CDB: oracle-se2-cdb
+
 ###############################################################################
 # Conditions
 ###############################################################################
@@ -631,11 +706,6 @@ Conditions:
     - !Condition UseDatabaseEncryption
     - !Condition UseSecretsManager
     - !Condition EnablePI
-  DoCreateDatabase:
-    !Not
-      - !Equals
-        - !Ref DBName
-        - ''
   EnableEM: !Equals
     - !Ref EnableEnhancedMonitoring
     - 'true'
@@ -645,16 +715,6 @@ Conditions:
   EventSubscription: !Equals
     - !Ref EnableEventSubscription
     - 'true'
-  EventSubscriptionDBCluster: !And
-    - !Condition EventSubscription
-    - !Condition isDBCluster
-  EventSubscriptionDBInstance: !And
-    - !Condition EventSubscription
-    - !Condition isDBInstance
-  isDBCluster: !Equals 
-    - !Ref DBMultiAZCluster
-    - 'true' 
-  isDBInstance: !Not [!Condition isDBCluster]
   isExportCWLogs: !Not 
     - !Equals 
       - !Join ["", !Ref DBExportLogToCloudwatch]
@@ -668,6 +728,9 @@ Conditions:
   isStorageAutoScaling: !Equals
     - !Ref StorageAutoScaling
     - "true"
+  isNotCDB: !Equals
+    - !Ref DBArchitecture
+    - "NonCDB"
   NAStorageIOPS: !Equals
     - !Ref StorageIOPS
     - '0'
@@ -677,9 +740,9 @@ Conditions:
   UseDatabaseEncryption: !Equals
     - !Ref DBAllocatedStorageEncrypted
     - "true"
-  UseSecretsManager: !Equals
-    - !Ref ManageMasterUserPassword
-    - "true"
+  UseSecretsManager: !And
+    - !Equals ["true", !Ref ManageMasterUserPassword]
+    - !Equals ["NonCDB", !Ref DBArchitecture]
 
 ###############################################################################
 # Rules
@@ -709,10 +772,6 @@ Rules:
     Assertions:
       - Assert: !Or [!Not [!Equals [!Ref StorageAutoScaling, 'true']], !Not [!Equals [!Ref MaxStorageThreshold, '0']]]
         AssertDescription: "Please enter a non-zero value for autoscaling limit, if enabling storage autoscaling."
-  MAZDBIOrMAZDBC:
-    Assertions:
-      - Assert: !Or [!Not [!Equals [!Ref DBMultiAZ, 'true']], !Not [!Equals [!Ref DBMultiAZCluster, 'true']]]
-        AssertDescription: "Please set either Multi-AZ DB Instance or Multi-AZ DB Cluster Deployment option to True."
 
 ###############################################################################
 # Resources
@@ -837,51 +896,32 @@ Resources:
 
   RDSDBPG:
     Type: AWS::RDS::DBParameterGroup
-    Condition: isDBInstance
     Properties:
-      Description: !Join [ "- ", [ "RDS PG Database Instance Parameter Group for Cloudformation Stack ", !Ref AWS::StackName ] ]
-      Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"]
-      Parameters:
-        log_rotation_age: '1440'
-        log_rotation_size: '102400'
+      Description: !Join [ "- ", [ "RDS Oracle Database Instance Parameter Group for Cloudformation Stack ", !Ref AWS::StackName ] ]
+      Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, !FindInMap [DBEngineEdition,!Ref DBEdition, !Ref DBArchitecture]]
   
-  RDSDBCPG:
-    Type: AWS::RDS::DBClusterParameterGroup
-    Condition: isDBCluster
-    Properties:
-      Description: !Join [ "- ", [ "RDS PG Cluster Parameter Group for Cloudformation Stack ", !Ref AWS::StackName ] ]
-      Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"]
-      Parameters:
-        log_rotation_age: '1440'
-        log_rotation_size: '102400'
-  
-  MAZDBI:
+  RDSORCL:
     Type: "AWS::RDS::DBInstance"
-    Condition: isDBInstance
     DeletionPolicy: Snapshot
     UpdateReplacePolicy: Snapshot
     Properties:
       AllocatedStorage: !Ref DBAllocatedStorage
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
-      DBName:
-        !If
-        - DoCreateDatabase
-        - !Ref DBName
-        - !Ref AWS::NoValue
+      DBName: !Ref DBName
       DBInstanceClass: !Ref DBInstanceClass
       DBParameterGroupName: !Ref RDSDBPG
       DBSubnetGroupName: !Ref RDSDBSubnetGroup
       EnableCloudwatchLogsExports: !If [isExportCWLogs, !Ref DBExportLogToCloudwatch, !Ref "AWS::NoValue"]
-      EnableIAMDatabaseAuthentication: !Ref EnableIAMDBAuth
       EnablePerformanceInsights: !Ref EnablePerformanceInsights
-      Engine: postgres
+      Engine: !FindInMap [DBEngine,!Ref DBEdition, !Ref DBArchitecture]
       EngineVersion: !Ref DBEngineVersion
-      #IOPS property is only valid for io1 and gp3 (>=400GB)
+      #IOPS property is only valid for io1 and gp3 (>=200GB)
       Iops: !If [isGP2, !Ref "AWS::NoValue", !If [NAStorageIOPS, !Ref 'AWS::NoValue', !Ref StorageIOPS]]
       KmsKeyId: !If [UseDatabaseEncryption, !GetAtt EncryptionKey.Arn, !Ref 'AWS::NoValue']
+      LicenseModel: !Ref DBLicense
       MasterUsername: !Ref DBMasterUsername
-      ManageMasterUserPassword: !Ref ManageMasterUserPassword
+      ManageMasterUserPassword: !If [isNotCDB, !Ref ManageMasterUserPassword, !Ref 'AWS::NoValue']
       MasterUserPassword: !If [UseSecretsManager, !Ref 'AWS::NoValue', !Ref DBMasterUserPassword]
       MasterUserSecret:
         KmsKeyId: !If [UseSecretsManager, !Ref EncryptionKey, !Ref 'AWS::NoValue']
@@ -895,12 +935,12 @@ Resources:
       PubliclyAccessible: !Ref PubliclyAccessible
       StorageType: !Ref DBStorageType  
       StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref 'AWS::NoValue']
-      #StorageThroughput property is only valid for gp3 (>=400GB)
+      #StorageThroughput property is only valid for gp3 (>=200GB)
       StorageThroughput: !If [isGP3, !If [NAStorageThrougput, !Ref "AWS::NoValue", !Ref StorageThroughput], !Ref "AWS::NoValue"]
       Tags:
         -
           Key: Name
-          Value: !Sub MAZDBI-${AWS::StackName}
+          Value: !Sub RDSORCL-${AWS::StackName}
         -
           Key: EnvironmentStage
           Value: !Ref EnvironmentStage
@@ -925,80 +965,6 @@ Resources:
           - [!Ref RDSSecurityGroup]
           - [!Ref CustomDBSecurityGroup] 
   
-  MAZDBC:
-    Metadata:
-      cfn-lint:
-        config:
-          ignore_checks:
-            - ERDSStorageEncryptionEnabled
-          ignore_reasons:
-            - ERDSStorageEncryptionEnabled: "StorageEncryption is conditional"
-    Type: "AWS::RDS::DBCluster"
-    Condition: isDBCluster
-    DeletionPolicy: Snapshot
-    UpdateReplacePolicy: Snapshot
-    Properties:
-      AllocatedStorage: !Ref DBAllocatedStorage
-      AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
-      BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
-      DBClusterIdentifier: !Sub rdsmazc-${AWS::StackName}
-      DBClusterInstanceClass: !Ref DBInstanceClass
-      DBClusterParameterGroupName: !Ref RDSDBCPG
-      DBSubnetGroupName: !Ref RDSDBSubnetGroup
-      DatabaseName:
-        !If
-        - DoCreateDatabase
-        - !Ref DBName
-        - !Ref AWS::NoValue
-      EnableCloudwatchLogsExports: !If [isExportCWLogs, !Ref DBExportLogToCloudwatch, !Ref "AWS::NoValue"]
-      # IAM DB authentication currently not supported for RDS Multi AZ DB Cluster
-      # EnableIAMDatabaseAuthentication: !Ref EnableIAMDBAuth
-      Engine: postgres
-      EngineVersion: !Ref DBEngineVersion
-      Iops: !Ref StorageIOPS
-      KmsKeyId: !If [UseDatabaseEncryption, !GetAtt EncryptionKey.Arn, !Ref 'AWS::NoValue']
-      MasterUsername: !Ref DBMasterUsername
-      ManageMasterUserPassword: !Ref ManageMasterUserPassword
-      MasterUserPassword: !If [UseSecretsManager, !Ref 'AWS::NoValue', !Ref DBMasterUserPassword]
-      MasterUserSecret:
-        KmsKeyId: !If [UseSecretsManager, !Ref EncryptionKey, !Ref 'AWS::NoValue']
-      MonitoringInterval: !If [EnableEM, !Ref MonitoringInterval, !Ref 'AWS::NoValue']
-      MonitoringRoleArn: !If [EnableEM, !GetAtt MRole.Arn, !Ref 'AWS::NoValue']
-      PerformanceInsightsEnabled: !Ref EnablePerformanceInsights
-      PerformanceInsightsKmsKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
-      PerformanceInsightsRetentionPeriod: !If [EnablePI, !Ref PerformanceInsightsRetentionPeriod, !Ref 'AWS::NoValue']
-      Port: !Ref DBPort
-      PubliclyAccessible: !Ref PubliclyAccessible
-      StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref 'AWS::NoValue']
-      StorageType: io1
-      Tags:
-        -
-          Key: Name
-          Value: !Sub MAZDBC-${AWS::StackName}
-        -
-          Key: EnvironmentStage
-          Value: !Ref EnvironmentStage
-        -
-          Key: Application
-          Value: !Ref Application
-        -
-          Key: ApplicationVersion
-          Value: !Ref ApplicationVersion
-        -
-          Key: ProjectCostCenter
-          Value: !Ref ProjectCostCenter
-        -
-          Key: Confidentiality
-          Value: !Ref Confidentiality
-        -
-          Key: Compliance
-          Value: !Ref Compliance
-      VpcSecurityGroupIds:
-        !If
-          - CreateSecurityGroup
-          - [!Ref RDSSecurityGroup]
-          - [!Ref CustomDBSecurityGroup]
-  
   CPUUtilizationAlarm1:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
@@ -1008,8 +974,7 @@ Resources:
       AlarmDescription: 'CPU_Utilization'
       Dimensions:
       - Name: DBInstanceIdentifier
-        Value:
-          !If [isDBInstance, !Ref MAZDBI, !Sub '${MAZDBC}-instance-1']
+        Value: !Ref RDSORCL
       MetricName: CPUUtilization
       Statistic: Maximum
       Namespace: 'AWS/RDS'
@@ -1019,83 +984,6 @@ Resources:
       Period: 60
       EvaluationPeriods: 5
       TreatMissingData: 'notBreaching'
-
-  CPUUtilizationAlarm2:
-    Type: "AWS::CloudWatch::Alarm"
-    Condition: isDBCluster
-    Properties:
-      ActionsEnabled: true
-      AlarmActions:
-      - Ref: DBSNSTopic
-      AlarmDescription: 'CPU_Utilization'
-      Dimensions:
-      - Name: DBInstanceIdentifier
-        Value:
-          !Sub '${MAZDBC}-instance-2'
-      MetricName: CPUUtilization
-      Statistic: Maximum
-      Namespace: 'AWS/RDS'
-      Threshold: 80
-      Unit: Percent
-      ComparisonOperator: 'GreaterThanOrEqualToThreshold'
-      Period: 60
-      EvaluationPeriods: 5
-      TreatMissingData: 'notBreaching'
-
-  CPUUtilizationAlarm3:
-    Type: "AWS::CloudWatch::Alarm"
-    Condition: isDBCluster
-    Properties:
-      ActionsEnabled: true
-      AlarmActions:
-      - Ref: DBSNSTopic
-      AlarmDescription: 'CPU_Utilization'
-      Dimensions:
-      - Name: DBInstanceIdentifier
-        Value:
-          !Sub '${MAZDBC}-instance-3'
-      MetricName: CPUUtilization
-      Statistic: Maximum
-      Namespace: 'AWS/RDS'
-      Threshold: 80
-      Unit: Percent
-      ComparisonOperator: 'GreaterThanOrEqualToThreshold'
-      Period: 60
-      EvaluationPeriods: 5
-      TreatMissingData: 'notBreaching'
-
-  MaxUsedTxIDsAlarm1:
-    Type: "AWS::CloudWatch::Alarm"
-    Properties:
-      ActionsEnabled: true
-      AlarmActions:
-      - Ref: DBSNSTopic
-      AlarmDescription: 'Maximum Used Transaction IDs'
-      Dimensions:
-      - Name: DBInstanceIdentifier
-        Value:
-          !If [isDBInstance, !Ref MAZDBI, !Sub '${MAZDBC}-instance-1']
-      MetricName: 'MaximumUsedTransactionIDs'
-      Statistic: Average
-      Namespace: 'AWS/RDS'
-      Threshold: 600000000
-      Unit: Count
-      ComparisonOperator: 'GreaterThanOrEqualToThreshold'
-      Period: 60
-      EvaluationPeriods: 5
-      TreatMissingData: 'notBreaching'
-
-  DatabaseClusterEventSubscription:
-    Condition: EventSubscriptionDBCluster
-    Type: 'AWS::RDS::EventSubscription'
-    Properties:
-      EventCategories:
-      - creation
-      - failover
-      - notification
-      SnsTopicArn: !Ref DBSNSTopic
-      SourceIds: [!Ref MAZDBC]
-      SourceType: 'db-cluster'
   
   DatabaseInstanceEventSubscription:
     Condition: EventSubscription
@@ -1116,14 +1004,11 @@ Resources:
       - recovery
       - security patching
       SnsTopicArn: !Ref DBSNSTopic
-      SourceIds:
-      - !If [isDBCluster, !Sub '${MAZDBC}-instance-1', !Ref MAZDBI]
-      - !If [isDBCluster, !Sub '${MAZDBC}-instance-2', !Ref "AWS::NoValue"]
-      - !If [isDBCluster, !Sub '${MAZDBC}-instance-3', !Ref "AWS::NoValue"]
+      SourceIds: 
+        - !Ref RDSORCL
       SourceType: 'db-instance'
   
   DBParameterGroupEventSubscription:
-    Condition: EventSubscriptionDBInstance
     Type: 'AWS::RDS::EventSubscription'
     Properties:
       EventCategories:
@@ -1138,8 +1023,7 @@ Resources:
 ###############################################################################
 Outputs:
   DBName:
-    Condition: DoCreateDatabase
-    Description: "Amazon RDS database name"
+    Description: "Oracle SID"
     Value: !Ref DBName
   DBMasterUsername:
     Description: "Amazon RDS database master username"
@@ -1147,25 +1031,16 @@ Outputs:
   MasterUserSecret:
     Condition: UseSecretsManager
     Description: "Master Credentials ARN"
-    Value: !If [isDBCluster, !Sub "${MAZDBC.MasterUserSecret.SecretArn}", !Sub "${MAZDBI.MasterUserSecret.SecretArn}"]
+    Value: !Sub "${RDSORCL.MasterUserSecret.SecretArn}"
   RDSEndPointAddress:
     Description: "Amazon RDS write endpoint"
-    Value: !If [isDBCluster, !Sub "${MAZDBC.Endpoint.Address}", !Sub "${MAZDBI.Endpoint.Address}"]
-  RDSReadEndPointAddress:
-    Condition: isDBCluster
-    Description: "Amazon RDS read endpoint"
-    Value: !Sub ${MAZDBC.ReadEndpoint.Address}
+    Value: !Sub "${RDSORCL.Endpoint.Address}"
   RDSEndPointPort:
     Description: "Amazon RDS port"
-    Value: !If [isDBCluster, !Sub "${MAZDBC.Endpoint.Port}", !Sub "${MAZDBI.Endpoint.Port}"]
-  RDSMAZInstEndPoints:
-    Condition: isDBInstance
+    Value: !Sub "${RDSORCL.Endpoint.Port}"
+  RDSEndPoints:
     Description: "Full Amazon RDS write endpoint"
-    Value: !If [DoCreateDatabase, !Sub "${MAZDBI.Endpoint.Address}:${MAZDBI.Endpoint.Port}/${DBName}", !Sub "${MAZDBI.Endpoint.Address}:${MAZDBI.Endpoint.Port}/postgres"]
-  RDSMAZClustEndPoints:
-    Condition: isDBCluster
-    Description: "Full Amazon RDS write endpoint"
-    Value: !If [DoCreateDatabase, !Sub "${MAZDBC.Endpoint.Address}:${MAZDBC.Endpoint.Port}/${DBName}", !Sub "${MAZDBC.Endpoint.Address}:${MAZDBC.Endpoint.Port}/postgres"]
+    Value: !Sub "${RDSORCL.Endpoint.Address}:${RDSORCL.Endpoint.Port}/${DBName}"
   RDSEncryptionKey:
     Condition: UseDatabaseEncryption
     Description: The alias of the encryption key created for RDS

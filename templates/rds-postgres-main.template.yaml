@@ -6,6 +6,10 @@ Metadata:
       ignore_checks:
         - E9101
         - I3011
+
+###############################################################################
+# Parameter groups
+###############################################################################
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -49,6 +53,8 @@ Metadata:
       - DBAllocatedStorageEncrypted
       - StorageIOPS
       - StorageThroughput
+      - StorageAutoScaling
+      - MaxStorageThreshold
     - Label:
         default: Database Monitoring configuration
       Parameters:
@@ -60,7 +66,7 @@ Metadata:
       - EnableEventSubscription  
       - NotificationList
     - Label:
-        default: Database tags (optional)
+        default: "[Optional] Database tags"
       Parameters:
       - EnvironmentStage
       - Application
@@ -74,6 +80,10 @@ Metadata:
       - QSS3BucketName
       - QSS3BucketRegion
       - QSS3KeyPrefix
+
+###############################################################################
+# Parameter labels
+###############################################################################
     ParameterLabels:
       
       #VPC stack related parameter labels
@@ -161,6 +171,8 @@ Metadata:
         default: Environment stage
       ManageMasterUserPassword:
         default: Manage DB master user password with AWS Secrets Manager
+      MaxStorageThreshold:
+        default: Limit for storage auto scaling in GiB
       MonitoringInterval:
         default: Enhanced monitoring interval
       NotificationList:
@@ -173,7 +185,12 @@ Metadata:
         default: Provisioned IOPS for gp3/io1 storage type
       StorageThroughput:
         default: Provisioned Throughput for gp3 storage type in MiBps
-      
+      StorageAutoScaling:
+        default: Enable storage auto scaling
+
+###############################################################################
+# Parameters
+###############################################################################      
 Parameters:
   
   #VPC stack related parameters
@@ -232,7 +249,7 @@ Parameters:
       - "true"
       - "false"
     Default: "true"
-    Description: "If true, a bastion stack will be created."
+    Description: "If 'true', a bastion stack will be created."
     Type: String
   EnableTCPForwarding:
     Type: String
@@ -271,34 +288,6 @@ Parameters:
     Type: String
   
   #RDS related parameters
-  Application:
-    Type: String
-    Default: ''
-    Description: Designates the application of the associated AWS resource. (Optional)
-  ApplicationVersion:
-    Type: String
-    Description: Designates the specific version of the application. (Optional)
-    Default: ''
-  Compliance:
-    Type: String
-    Default: ''
-    Description: Designates the compliance level for the AWS resource. (Optional)
-    AllowedValues:
-      - hipaa
-      - sox
-      - fips
-      - other
-      - ''
-  Confidentiality:
-    Type: String
-    Default: ''
-    Description: Designates the confidentiality classification of the data that is associated with the resource. (Optional)
-    AllowedValues:
-      - public
-      - private
-      - confidential
-      - pii/phi
-      - ''
   DBAllocatedStorage:
     Default: 100
     Description: Allocated storage size in GiB. For gp2 and gp3, must be an integer from 20 to 65536. For io1, must be an integer from 100 to 65536.
@@ -318,7 +307,7 @@ Parameters:
       - "true"
       - "false"
     Default: "true"
-    Description: "Select true to set up auto minor version upgrade."
+    Description: "Select 'true' to set up auto minor version upgrade."
     Type: String
   DBBackupRetentionPeriod:
     Default: 35
@@ -327,56 +316,37 @@ Parameters:
     MinValue: 0
     MaxValue: 35
   DBEngineVersion:
-    Description: Select Database Engine Version
+    Description: Select Database Engine Version.
     Type: String
-    Default: 15.2
+    Default: 15.3
     AllowedValues:
-      - 10.17
-      - 10.18
-      - 10.19
-      - 10.20
-      - 10.21
-      - 10.22
-      - 10.23
-      - 11.12
-      - 11.13
-      - 11.14
-      - 11.15
       - 11.16
       - 11.17
       - 11.18
       - 11.19
-      - 12.7
-      - 12.8
-      - 12.9
-      - 12.10
+      - 11.20
       - 12.11
       - 12.12
       - 12.13
       - 12.14
-      - 13.3
-      - 13.4
-      - 13.5
-      - 13.6
-      - 13.7
-      - 13.8
-      - 13.9
+      - 12.15
+      - 13.7 
+      - 13.8 
+      - 13.9 
       - 13.10
-      - 14.1
-      - 14.2
-      - 14.3
-      - 14.4
-      - 14.5
-      - 14.6
-      - 14.7
-      - 15.2
+      - 13.11
+      - 14.3 
+      - 14.4 
+      - 14.5 
+      - 14.6 
+      - 14.7 
+      - 14.8 
+      - 15.2 
+      - 15.3
   DBExportLogToCloudwatch:
-    Default: "true"
-    AllowedValues:
-      - "true"
-      - "false"
-    Description: Whether or not to export Database logs to CloudWatch
-    Type: String
+    Default: ''
+    Description: Specify the comma-delimited list of database logs (postgresql, upgrade) to export to CloudWatch Logs.
+    Type: CommaDelimitedList
   DBInstanceClass:
     Default: db.r5.large
     Description: >-
@@ -386,28 +356,28 @@ Parameters:
     Type: String
     AllowedValues:
       - db.m5.12xlarge
-      - db.m5.16xlarge
-      - db.m5.24xlarge
-      - db.m5.2xlarge
-      - db.m5.4xlarge
-      - db.m5.8xlarge
-      - db.m5.large
-      - db.m5.xlarge
+      - db.m5.16xlarge 
+      - db.m5.24xlarge 
+      - db.m5.2xlarge  
+      - db.m5.4xlarge  
+      - db.m5.8xlarge  
+      - db.m5.large    
+      - db.m5.xlarge   
       - db.m5d.12xlarge
       - db.m5d.16xlarge
       - db.m5d.24xlarge
-      - db.m5d.2xlarge
-      - db.m5d.4xlarge
-      - db.m5d.8xlarge
-      - db.m5d.large
-      - db.m5d.xlarge
+      - db.m5d.2xlarge 
+      - db.m5d.4xlarge 
+      - db.m5d.8xlarge 
+      - db.m5d.large   
+      - db.m5d.xlarge  
       - db.m6g.12xlarge
       - db.m6g.16xlarge
-      - db.m6g.2xlarge
-      - db.m6g.4xlarge
-      - db.m6g.8xlarge
-      - db.m6g.large
-      - db.m6g.xlarge
+      - db.m6g.2xlarge 
+      - db.m6g.4xlarge 
+      - db.m6g.8xlarge 
+      - db.m6g.large   
+      - db.m6g.xlarge  
       - db.m6gd.12xlarge
       - db.m6gd.16xlarge
       - db.m6gd.2xlarge
@@ -424,6 +394,13 @@ Parameters:
       - db.m6i.8xlarge
       - db.m6i.large
       - db.m6i.xlarge
+      - db.m7g.12xlarge
+      - db.m7g.16xlarge
+      - db.m7g.2xlarge
+      - db.m7g.4xlarge
+      - db.m7g.8xlarge
+      - db.m7g.large
+      - db.m7g.xlarge
       - db.r5.12xlarge
       - db.r5.16xlarge
       - db.r5.24xlarge
@@ -471,6 +448,13 @@ Parameters:
       - db.r6i.8xlarge
       - db.r6i.large
       - db.r6i.xlarge
+      - db.r7g.12xlarge
+      - db.r7g.16xlarge
+      - db.r7g.2xlarge
+      - db.r7g.4xlarge
+      - db.r7g.8xlarge
+      - db.r7g.large
+      - db.r7g.xlarge
       - db.t3.2xlarge
       - db.t3.large
       - db.t3.medium
@@ -500,19 +484,16 @@ Parameters:
   DBMasterUsername:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
-    Default: pgadmin
-    Description: "The database master username."
+    Description: (Required) The database master username. Must begin with a letter and contain only alphanumeric characters.
     MaxLength: "16"
     MinLength: "1"
     Type: String
   DBMasterUserPassword:
     AllowedPattern: >-
       ^(?=^.{8,255}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)((?=.*[^A-Za-z0-9])(?!.*[@/"'])).*$
-    ConstraintDescription: >-
-      Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol
-    Default: "Gjht56Ft$"
-    Description: "The database master user password. Required if _Manage DB master user password with AWS Secrets Manager_ option is set to false."
-    MaxLength: "64"
+    ConstraintDescription: Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol
+    Description: (Required) The database master user password. Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol. Ignored if 'Manage DB master user password with AWS Secrets Manager' option is set to 'true'.
+    MaxLength: "128"
     MinLength: "8"
     NoEcho: "True"
     Type: String
@@ -521,10 +502,10 @@ Parameters:
       - "true"
       - "false"
     Default: "false"
-    Description: "Select true to deploy a RDS Multi-AZ DB instance."
+    Description: "Select 'true' to deploy a RDS Multi-AZ DB instance."
     Type: String
   DBMultiAZCluster:
-    Description: "Select true to deploy a RDS Multi-AZ DB cluster with two readable standbys."
+    Description: "Select 'true' to deploy a RDS Multi-AZ DB cluster with two readable standbys."
     Type: String
     Default: "false"
     AllowedValues:
@@ -533,7 +514,7 @@ Parameters:
   DBName:
     AllowedPattern: "[a-zA-Z0-9]*"
     Description: "Name of the initial PostgreSQL database to create."
-    MaxLength: "64"
+    MaxLength: "63"
     MinLength: "0"
     Default: 'sampleapp'
     Type: String
@@ -557,46 +538,43 @@ Parameters:
       - "true"
       - "false"
     Default: "true"
-    Description: "Enables RDS Performance Insights"
+    Description: Enables Enhanced Monitoring.
     Type: String
   EnableEventSubscription:
     AllowedValues:
       - "true"
       - "false"
     Default: "true"
-    Description: "Enables event subscription to Notification List"
+    Description: Enables event subscription to Notification List.
     Type: String
   EnableIAMDBAuth:
     AllowedValues:
       - "true"
       - "false"
     Default: "true"
-    Description: "Enables IAM Database Authentication"
+    Description: Enables IAM Database Authentication. Doesn't apply to Multi-AZ DB Cluster deployments.
     Type: String
   EnablePerformanceInsights:
     AllowedValues:
       - "true"
       - "false"
     Default: "true"
-    Description: "Enables RDS Performance Insights"
+    Description: Enables RDS Performance Insights.
     Type: String
-  EnvironmentStage:
-    Type: String
-    Description: Designates the environment stage of the associated AWS resource. (Optional)
-    AllowedValues:
-      - dev
-      - test
-      - pre-prod
-      - prod
-      - none
-    Default: none
   ManageMasterUserPassword:
     AllowedValues:
       - "true"
       - "false"
     Default: "true"
-    Description: "Set to true to manage the master user password with AWS Secrets Manager."
+    Description: Set to 'true' to manage the master user password with AWS Secrets Manager.
     Type: String
+  MaxStorageThreshold:
+    Default: 150
+    Description: >-
+      The maximum storage threshold is the limit that you set for autoscaling the DB instance.
+      Must be at least 10% more than the current allocated storage. Doesn't apply to Multi-AZ DB Cluster deployments.
+      For details, refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.StorageTypes.html#USER_PIOPS.Autoscaling
+    Type: Number
   MonitoringInterval:
     Default: 10
     Description: "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the database."
@@ -617,20 +595,26 @@ Parameters:
     ConstraintDescription: Provide a valid email address.
   PerformanceInsightsRetentionPeriod:
     Default: 7
-    Description: "The number of days for which automatic database snapshots are retained. Specify days based on (month * 31), where month is a number of months from 1-23"
+    Description: "The number of days for which automatic database snapshots are retained. Specify days based on (month * 31), where month is a number of months from 1-23."
     Type: Number
     MinValue: 7
     MaxValue: 713
-  ProjectCostCenter:
+  StorageAutoScaling:
+    Default: "true"
+    Description: >-
+      With storage autoscaling enabled, when Amazon RDS detects that you are running out of free database space it automatically scales up your storage.
+      Doesn't apply to Multi-AZ DB Cluster deployments.
+      For details, refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.StorageTypes.html#USER_PIOPS.Autoscaling
     Type: String
-    Default: ''
-    Description: Designates the cost center associated with the project of the given AWS resource. (Optional) 
+    AllowedValues:
+      - "true"
+      - "false"
   StorageIOPS:
     Default: '0'
     Description: >-
       If you choose gp3 (and allocate >= 400 GiB) or io1, you must specify provisioned IOPS. Leave at default value otherwise.
-      For io1, the ratio of provisioned IOPS to allocated storage (in GiB) must be from 0.5 to 50.
-      For gp3, the maximum ratio of provisioned IOPS to allocated storage (in GiB) is 500.
+      For io1, the ratio of provisioned IOPS to allocated storage (in GiB) must be from 0.5 to 50, and range of provisioned IOPS is 1,000-256,000.
+      For gp3, the maximum ratio of provisioned IOPS to allocated storage (in GiB) is 500, and range of provisioned IOPS is 12,000–64,000.
       For details, refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html
     Type: String
   StorageThroughput:
@@ -638,22 +622,84 @@ Parameters:
     Description: >-
       Provisioned throughput in MiBps. 
       If you choose gp3 (and allocate >= 400 GiB) as storage type, you must specify provisioned throughput. Leave at default value otherwise.
-      The maximum ratio of provisioned storage throughput (in MiBps) to IOPS is 0.25.
+      The maximum ratio of provisioned storage throughput (in MiBps) to IOPS is 0.25 and the range of provisioned storage throughput is 500–4,000 MiBps.
       For details, refer https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html
     Type: String
   
+  #Optional parameters
+  
+  Application:
+    Type: String
+    Default: ''
+    Description: "[Optional] Designates the application of the associated AWS resource."
+  ApplicationVersion:
+    Type: String
+    Description: "[Optional] Designates the specific version of the application."
+    Default: ''
+  Compliance:
+    Type: String
+    Default: ''
+    Description: "[Optional] Designates the compliance level for the AWS resource."
+    AllowedValues:
+      - hipaa
+      - sox
+      - fips
+      - other
+      - ''
+  Confidentiality:
+    Type: String
+    Default: ''
+    Description: "[Optional] Designates the confidentiality classification of the data that is associated with the resource."
+    AllowedValues:
+      - public
+      - private
+      - confidential
+      - pii/phi
+      - ''
+  EnvironmentStage:
+    Type: String
+    Description: "[Optional] Designates the environment stage of the associated AWS resource."
+    AllowedValues:
+      - dev
+      - test
+      - pre-prod
+      - prod
+      - none
+    Default: none
+  ProjectCostCenter:
+    Type: String
+    Default: ''
+    Description: "[Optional] Designates the cost center associated with the project of the given AWS resource." 
+
+###############################################################################
+# Conditions
+###############################################################################  
 Conditions:
   EnableBastionAccess: !Equals
     - !Ref EnableBastion
     - "true"
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 
+###############################################################################
+# Rules
+###############################################################################
 Rules:
   IOPSForIO1:
     Assertions:
       - Assert: !Or [!Not [!Equals [!Ref DBStorageType, 'io1']], !Not [!Equals [!Ref StorageIOPS, '0']]]
         AssertDescription: "For io1 storage type, you must specify provisioned IOPS"
+  MaxStorageThresholdforAutoScaling:
+    Assertions:
+      - Assert: !Or [!Not [!Equals [!Ref StorageAutoScaling, 'true']], !Not [!Equals [!Ref MaxStorageThreshold, '0']]]
+        AssertDescription: "Please enter a non-zero value for autoscaling limit, if enabling storage autoscaling."
+  MAZDBIOrMAZDBC:
+    Assertions:
+      - Assert: !Or [!Not [!Equals [!Ref DBMultiAZ, 'true']], !Not [!Equals [!Ref DBMultiAZCluster, 'true']]]
+        AssertDescription: "Please set either Multi-AZ DB Instance or Multi-AZ DB Cluster Deployment option to True."
 
+###############################################################################
+# Resources
+###############################################################################
 Resources:
   
   VPCStack:
@@ -716,7 +762,7 @@ Resources:
         !Sub
           - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/rds-postgresql.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]      
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         #Database Network configuration
         VPCID:
@@ -753,10 +799,14 @@ Resources:
         DBStorageType: !Ref DBStorageType
         DBAllocatedStorage: !Ref DBAllocatedStorage
         DBAllocatedStorageEncrypted: !Ref DBAllocatedStorageEncrypted
+        MaxStorageThreshold: !Ref MaxStorageThreshold
         StorageIOPS: !Ref StorageIOPS
         StorageThroughput: !Ref StorageThroughput
+        StorageAutoScaling: !Ref StorageAutoScaling
         #Database Monitoring configuration
-        DBExportLogToCloudwatch: !Ref DBExportLogToCloudwatch
+        DBExportLogToCloudwatch: !Join
+          - ','
+          - !Ref DBExportLogToCloudwatch
         EnablePerformanceInsights: !Ref EnablePerformanceInsights
         PerformanceInsightsRetentionPeriod: !Ref PerformanceInsightsRetentionPeriod
         EnableEnhancedMonitoring: !Ref EnableEnhancedMonitoring
