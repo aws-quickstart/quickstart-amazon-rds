@@ -10,7 +10,7 @@ This Partner Solution provides the following deployment options:
 * https://fwd.aws/qRJ7y?[Deploy Amazon RDS for Microsoft SQL Server into an existing VPC]. This option provisions Amazon RDS for Microsoft SQL in your existing AWS infrastructure.
 * https://fwd.aws/79NKd?[Deploy Amazon RDS for MariaDB into a new VPC]. This option builds a new AWS environment that consists of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys Amazon RDS for MariaDB into this new VPC.
 * https://fwd.aws/nk3qz?[Deploy Amazon RDS for MariaDB into an existing VPC]. This option provisions Amazon RDS for MariaDB in your existing AWS infrastructure.
-* https://fwd.aws/5KXD6?[Deploy Amazon RDS for Oracle into a new VPC]. This option builds a new AWS environment that consists of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys Amazon RDS for MariaDB into this new VPC.
-* https://fwd.aws/adKK4?[Deploy Amazon RDS for Oracle into an existing VPC]. This option provisions Amazon RDS for MariaDB in your existing AWS infrastructure.
+* https://fwd.aws/5KXD6?[Deploy Amazon RDS for Oracle into a new VPC]. This option builds a new AWS environment that consists of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys Amazon RDS for Oracle into this new VPC.
+* https://fwd.aws/adKK4?[Deploy Amazon RDS for Oracle into an existing VPC]. This option provisions Amazon RDS for Oracle in your existing AWS infrastructure.
 
 This Partner Solution provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and {partner-product-short-name} settings.
